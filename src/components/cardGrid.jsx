@@ -1,16 +1,25 @@
-import React from 'react';
-import { Grid, Typography, Card, CardContent } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Grid,
+  Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+} from '@mui/material';
+import mockData from '../mockData';
 
-const pokemonCard = () => {
+const getPokemonCard = (pokemonId) => {
+  const [pokemonData, setPokemonData] = useState(mockData);
+  console.log(pokemonData[`${pokemonId}`]);
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={pokemonId}>
       <Card className='card'>
         <CardContent>
           <Typography variant='h5' component='div'>
-            Pokemon Name
+            {`${pokemonData[`${pokemonId}`].name}`}
           </Typography>
           <Typography variant='body2' color='text.secondary'>
-            Pokemon Details
+            {`ID: ${pokemonId}`}
           </Typography>
         </CardContent>
       </Card>
@@ -19,57 +28,28 @@ const pokemonCard = () => {
 };
 
 const CardGrid = () => {
+  const [pokemonData, setPokemonData] = useState(mockData);
   return (
-    <Grid container spacing={2} className='card-grid'>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-      <Grid className='grid-item' item xs={12} sm={6} md={4}>
-        {pokemonCard()}
-      </Grid>
-    </Grid>
+    <>
+      {!pokemonData || pokemonData.length === 0 ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+          }}
+        >
+          <CircularProgress color='secondary' />
+        </div>
+      ) : (
+        <Grid container spacing={2} className='card-grid'>
+          {Object.keys(pokemonData).map((pokemonId) =>
+            getPokemonCard(pokemonId),
+          )}
+        </Grid>
+      )}
+    </>
   );
 };
 

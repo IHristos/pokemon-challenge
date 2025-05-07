@@ -22,20 +22,6 @@ body {
   width: 100%;
 }
 
-.navbar-list {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar-list .navbar-item:hover {
-  color: black;
-  cursor: pointer;
-}
-
 .grid-item {
   background-color: darkred;
 }
@@ -45,3 +31,5 @@ body {
   display: flex;
   justify-content: center;
 }
+
+/* Navbar */
