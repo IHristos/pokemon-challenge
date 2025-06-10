@@ -1,19 +1,19 @@
-import * as React from 'react';
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Typography,
-  Menu,
-  Container,
-  Button,
-  MenuItem,
-} from '@mui/material';
 import {
   Menu as MenuIcon,
   CatchingPokemonSharp as PokemonIcon,
 } from '@mui/icons-material';
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import * as React from 'react';
 import '../index.css';
 
 const pages = ['Home', 'Pokemons', 'About'];

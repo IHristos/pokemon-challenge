@@ -1,8 +1,8 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import pluginReact from 'eslint-plugin-react';
 import { defineConfig } from 'eslint/config';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import globals from 'globals';
 
 export default defineConfig([
   {
@@ -27,6 +27,8 @@ export default defineConfig([
       'capitalized-comments': ['warn', 'always'],
       'no-unused-vars': 'warn',
       'no-duplicate-imports': 'error',
+      'unused-imports/no-unused-imports': 'error',
+      'import/order': ['error', { alphabetize: { order: 'asc' } }],
       eqeqeq: ['error', 'always'],
     },
   },

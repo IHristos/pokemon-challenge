@@ -1,35 +1,8 @@
-import React, { useState } from 'react';
-import {
-  Grid,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-  CircularProgress,
-} from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
+import { useState } from 'react';
+import '../css/cardGrid.css';
 import mockData from '../mockData';
-
-const getPokemonCard = (pokemonId) => {
-  const [pokemonData, setPokemonData] = useState(mockData);
-  console.log(pokemonData[`${pokemonId}`]);
-   const { id, name } = pokemonData[`${pokemonId}`];
-   const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-  return (
-    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={pokemonId}>
-      <Card className='card'>
-        <CardMedia className='test' image={sprite} style={{ width: "130px", height: "130px", margin:"auto"}} />
-        <CardContent>
-          <Typography variant='h5' component='div'>
-            {`${pokemonData[`${pokemonId}`].name}`}
-          </Typography>
-          <Typography variant='body2' color='text.secondary'>
-            {`ID: ${pokemonId}`}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Grid>
-  );
-};
+import PokemonCard from './pokemonCard';
 
 const CardGrid = () => {
   const [pokemonData, setPokemonData] = useState(mockData);
@@ -44,13 +17,28 @@ const CardGrid = () => {
             height: '100vh',
           }}
         >
-          <CircularProgress color='secondary' />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <h1>Loading...</h1>
+            <CircularProgress color='secondary' />
+          </div>
         </div>
       ) : (
-        <Grid container spacing={2} className='card-grid'>
-          {Object.keys(pokemonData).map((pokemonId) =>
-            getPokemonCard(pokemonId),
-          )}
+        <Grid container spacing={6} className='card-grid'>
+          {Object.entries(pokemonData).map(([pokemonId, pokemon]) => (
+            <Grid size={{ xs: 12, sm: 6, md: 2 }} key={pokemonId}>
+              <PokemonCard
+                key={pokemonId}
+                pokemonId={pokemonId}
+                pokemon={pokemon}
+              />
+            </Grid>
+          ))}
         </Grid>
       )}
     </>
