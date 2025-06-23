@@ -1,13 +1,19 @@
 import js from '@eslint/js';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
-import pluginReact from 'eslint-plugin-react';
 import { defineConfig } from 'eslint/config';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import pluginImport from 'eslint-plugin-import';
+import pluginReact from 'eslint-plugin-react';
+import pluginUnusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 
 export default defineConfig([
   {
     files: ['**/*.{js,mjs,cjs,jsx}'],
-    plugins: { js },
+    plugins: {
+      js,
+      'unused-imports': pluginUnusedImports,
+      import: pluginImport,
+    },
     extends: ['js/recommended', eslintConfigPrettier],
   },
   {
@@ -30,6 +36,7 @@ export default defineConfig([
       'unused-imports/no-unused-imports': 'error',
       'import/order': ['error', { alphabetize: { order: 'asc' } }],
       eqeqeq: ['error', 'always'],
+      'react/react-in-jsx-scope': 'off',
     },
   },
 ]);
