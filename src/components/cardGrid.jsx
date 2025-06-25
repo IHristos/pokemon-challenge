@@ -5,7 +5,7 @@ import mockData from '../mockData';
 import PokemonCard from './pokemonCard';
 
 const CardGrid = () => {
-  const [pokemonData, setPokemonData] = useState(mockData);
+  const [pokemonData] = useState(mockData);
   return (
     <>
       {!pokemonData || pokemonData.length === 0 ? (

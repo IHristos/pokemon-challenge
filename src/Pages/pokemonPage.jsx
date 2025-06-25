@@ -8,7 +8,7 @@ import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
 const PokemonPage = () => {
   const { pokemonId } = useParams();
-  const [pokemon, setPokemon] = useState(mockData[`${pokemonId}`]);
+  const [pokemon] = useState(mockData[`${pokemonId}`]);
   const capitalizedName = capitalizeFirstChar(pokemon.name);
 
   const getPokemon = () => {
