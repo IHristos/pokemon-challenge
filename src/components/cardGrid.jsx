@@ -16,8 +16,8 @@ const CardGrid = () => {
           results.map((pokemon) => axios.get(pokemon.url)),
         );
         const newPokemonData = {};
-        detailResponses.forEach((res, index) => {
-          const data = res.data;
+        detailResponses.forEach((response) => {
+          const data = response.data;
           newPokemonData[data.id] = {
             id: data.id,
             name: data.name,
