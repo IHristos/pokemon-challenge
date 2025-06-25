@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
+import Footer from '../components/footer';
+import Navbar from '../components/navbar';
 import mockData from '../mockData';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
