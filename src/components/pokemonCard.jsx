@@ -2,12 +2,12 @@ import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import '../css/cardGrid.css';
+import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
 const PokemonCard = ({ pokemonId, pokemon }) => {
   const navigate = useNavigate();
   const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
-  const capitalizedName =
-    pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+  const capitalizedName = capitalizeFirstChar(pokemon.name);
 
   console.log(pokemonId); // For debugging. Needs to be deleted when the project is finished.
   console.log(pokemon); // For debugging. Needs to be deleted when the project is finished.
@@ -20,10 +20,10 @@ const PokemonCard = ({ pokemonId, pokemon }) => {
         sx={{ width: 200, height: 200, mx: 'auto' }}
       />
       <CardContent>
-        <Typography variant='h5' component='div'>
+        <Typography variant='h5' component='div' sx={{ textAlign: 'center' }}>
           {capitalizedName ?? 'Unknown'}
         </Typography>
-        <Typography variant='h5' component='div'>
+        <Typography variant='h5' component='div' sx={{ textAlign: 'center' }}>
           {(pokemon?.types || [])
             .map((typeObj) => typeObj?.type?.name)
             .join(', ') || 'Unknown'}
