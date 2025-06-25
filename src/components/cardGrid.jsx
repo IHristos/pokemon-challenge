@@ -1,11 +1,34 @@
 import { CircularProgress, Grid } from '@mui/material';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import '../css/cardGrid.css';
-import mockData from '../mockData';
 import PokemonCard from './pokemonCard';
 
 const CardGrid = () => {
-  const [pokemonData] = useState(mockData);
+  const [pokemonData, setPokemonData] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get('https://pokeapi.co/api/v2/pokemon?limit=151')
+      .then(async (response) => {
+        const { results } = response.data;
+        const detailResponses = await Promise.all(
+          results.map((pokemon) => axios.get(pokemon.url)),
+        );
+        const newPokemonData = {};
+        detailResponses.forEach((res, index) => {
+          const data = res.data;
+          newPokemonData[data.id] = {
+            id: data.id,
+            name: data.name,
+            sprite: data.sprites.front_default,
+            types: data.types,
+          };
+        });
+        setPokemonData(newPokemonData);
+      });
+  }, []);
+
   return (
     <>
       {!pokemonData || pokemonData.length === 0 ? (

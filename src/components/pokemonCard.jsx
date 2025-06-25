@@ -13,7 +13,12 @@ const PokemonCard = ({ pokemonId, pokemon }) => {
   console.log(pokemon); // For debugging. Needs to be deleted when the project is finished.
 
   return (
-    <Card className='card' onClick={() => navigate(`/pokemon/${pokemonId}`)}>
+    <Card
+      className='card'
+      onClick={() =>
+        navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
+      }
+    >
       <CardMedia
         className='pokemon-card-media'
         image={sprite}
@@ -25,7 +30,7 @@ const PokemonCard = ({ pokemonId, pokemon }) => {
         </Typography>
         <Typography variant='h5' component='div' sx={{ textAlign: 'center' }}>
           {(pokemon?.types || [])
-            .map((typeObj) => typeObj?.type?.name)
+            .map((typeObj) => capitalizeFirstChar(typeObj?.type?.name))
             .join(', ') || 'Unknown'}
         </Typography>
         <Typography variant='body2' color='text.secondary'>
@@ -36,24 +41,9 @@ const PokemonCard = ({ pokemonId, pokemon }) => {
   );
 };
 
-// This is an example that will probably will be used later when the data structure is more defined.
-// PokemonCard.propTypes = {
-//   PokemonId: PropTypes.number.isRequired,
-//   Pokemon: PropTypes.shape({
-//     Id: PropTypes.number.isRequired,
-//     Name: PropTypes.string.isRequired,
-//     Types: PropTypes.arrayOf(
-//       PropTypes.shape({
-//         Type: PropTypes.shape({
-//           Name: PropTypes.string.isRequired,
-//         }).isRequired,
-//       }),
-//     ).isRequired,
-//   }).isRequired,
-// };
 PokemonCard.propTypes = {
   pokemonId: PropTypes.number,
-  pokemon: PropTypes.object, // Flexible for now
+  pokemon: PropTypes.object,
 };
 
 export default PokemonCard;
