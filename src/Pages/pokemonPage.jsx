@@ -1,27 +1,27 @@
 import { Button, CircularProgress, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
 const PokemonPage = () => {
   const { name } = useParams();
-  const location = useLocation();
-  const pokemonId = location.state?.id || name;
-  const [pokemon, setPokemon] = useState('');
+  const [pokemon, setPokemon] = useState(undefined);
   const navigate = useNavigate();
+
   useEffect(() => {
+    setPokemon(undefined); // Reset to loading state on name change
     axios
-      .get('https://pokeapi.co/api/v2/pokemon/' + pokemonId)
+      .get('https://pokeapi.co/api/v2/pokemon/' + name)
       .then(function (response) {
         setPokemon(response.data);
       })
       .catch(function (error) {
         setPokemon(false);
       });
-  }, [pokemonId]);
+  }, [name]);
 
   const getPokemon = () => {
     if (!pokemon) {
@@ -63,7 +63,7 @@ const PokemonPage = () => {
     <>
       <Navbar />
       {pokemon === undefined && <CircularProgress color='secondary' />}
-      {pokemon !== undefined && pokemon && getPokemon()}
+      {pokemon && getPokemon()}
       {pokemon === false && (
         <Typography variant='h4'>Pokemon not found</Typography>
       )}
@@ -73,7 +73,7 @@ const PokemonPage = () => {
         </Button>
       )}
       <div className='pokemon-page'>
-        <h1>{`Pokemon Page for Pokemon: #${pokemonId}`}</h1>
+        <h1>{`Pokemon Page for Pokemon: #${pokemon?.id || name}`}</h1>
       </div>
       <Footer />
     </>

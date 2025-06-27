@@ -54,7 +54,7 @@ const CardGrid = () => {
       ) : (
         <Grid container spacing={6} className='card-grid'>
           {Object.entries(pokemonData).map(([pokemonId, pokemon]) => (
-            <Grid size={{ xs: 12, sm: 6, md: 2 }} key={pokemonId}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={pokemonId}>
               <PokemonCard
                 key={pokemonId}
                 pokemonId={pokemonId}
