@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import '../css/cardGrid.css';
 import PokemonCard from './pokemonCard';
 
-const CardGrid = () => {
+const CardGrid = ({ filter = '' }) => {
   const [pokemonData, setPokemonData] = useState(null);
 
+  // I need to implement pagination here
   useEffect(() => {
     axios
       .get('https://pokeapi.co/api/v2/pokemon?limit=151')
@@ -53,15 +54,20 @@ const CardGrid = () => {
         </div>
       ) : (
         <Grid container spacing={6} className='card-grid'>
-          {Object.entries(pokemonData).map(([pokemonId, pokemon]) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={pokemonId}>
-              <PokemonCard
-                key={pokemonId}
-                pokemonId={pokemonId}
-                pokemon={pokemon}
-              />
-            </Grid>
-          ))}
+          {Object.entries(pokemonData)
+            // eslint-disable-next-line no-unused-vars
+            .filter(([pokemonId, pokemon]) =>
+              pokemon.name.toLowerCase().includes(filter.toLowerCase()),
+            )
+            .map(([pokemonId, pokemon]) => (
+              <Grid size={{ xs: 12, sm: 6, md: 2 }} key={pokemonId}>
+                <PokemonCard
+                  key={pokemonId}
+                  pokemonId={pokemonId}
+                  pokemon={pokemon}
+                />
+              </Grid>
+            ))}
         </Grid>
       )}
     </>

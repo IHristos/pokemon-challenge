@@ -12,13 +12,13 @@ const PokemonPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setPokemon(undefined); // Reset to loading state on name change
+    setPokemon(undefined);
     axios
       .get('https://pokeapi.co/api/v2/pokemon/' + name)
       .then(function (response) {
         setPokemon(response.data);
       })
-      .catch(function (error) {
+      .catch(function () {
         setPokemon(false);
       });
   }, [name]);
@@ -59,13 +59,26 @@ const PokemonPage = () => {
     );
   };
 
+  // I need to add an image for showing when the pokemon is not found (maybe the MissinNo pokemon card image, or the egg 0.png)
+
   return (
     <>
       <Navbar />
       {pokemon === undefined && <CircularProgress color='secondary' />}
       {pokemon && getPokemon()}
       {pokemon === false && (
-        <Typography variant='h4'>Pokemon not found</Typography>
+        <>
+          <img
+            src={
+              import.meta.glob('../assets/shiny/0.png', { eager: true })[
+                '../assets/shiny/0.png'
+              ]?.default
+            }
+            alt='Pokemon not found'
+            style={{ width: '300px', height: '300px' }}
+          />
+          <Typography variant='h4'>Pokemon not found</Typography>
+        </>
       )}
       {pokemon !== undefined && (
         <Button variant='contained' onClick={() => navigate('/')}>
