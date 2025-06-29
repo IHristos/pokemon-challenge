@@ -6,8 +6,9 @@ import { Button, CircularProgress, Grid } from '@mui/material';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import '../css/cardGrid.css';
+import { useCompare } from './compareContext';
 import PokemonCard from './pokemonCard';
 
 const cardsPerPage = 18;
@@ -44,6 +45,14 @@ const CardGrid = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get('page'), 10);
   const [internalPage, setInternalPage] = useState(0);
+
+  const { addPokemonToCompare } = useCompare();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Detect compare mode by query param (?compare=1) or location state
+  const compareMode = true;
+  // Location.state?.compareMode || searchParams.get('compare') === '1';
 
   const page = filter
     ? internalPage
@@ -176,7 +185,6 @@ const CardGrid = ({
     }
 
     const pages = [];
-
     pages.push(0);
 
     if (page <= 1) {
@@ -197,6 +205,12 @@ const CardGrid = ({
     );
     allPages.sort((a, b) => a - b);
     return allPages;
+  };
+
+  // Handler for adding to compare
+  const handleAddToCompare = (pokemon) => {
+    addPokemonToCompare(pokemon);
+    navigate('/compare');
   };
 
   return (
@@ -238,6 +252,8 @@ const CardGrid = ({
                     key={pokemon.id}
                     pokemonId={pokemon.id}
                     pokemon={pokemon}
+                    showAddButton={compareMode}
+                    onAdd={handleAddToCompare}
                   />
                 </Grid>
               ))
