@@ -55,12 +55,9 @@ const PokemonCard = ({ pokemonId, pokemon }) => {
                 }}
               >
                 {iconSrc && (
-                  <img
-                    src={iconSrc}
-                    alt={typeName}
-                    className={`icon ${typeName}`}
-                    style={{ width: 24, height: 24, marginRight: 4 }}
-                  />
+                  <span className={`type-icon-bg ${typeName}`}>
+                    <img src={iconSrc} alt={typeName} className='type-icon' />
+                  </span>
                 )}
                 {capitalizeFirstChar(typeName)}
               </span>
@@ -70,7 +67,7 @@ const PokemonCard = ({ pokemonId, pokemon }) => {
         <Typography
           variant='body2'
           color='text.secondary'
-          style={{ marginTop: '55px', textAlign: 'center' }}
+          style={{ marginTop: '40px', textAlign: 'center' }}
         >
           ID: {pokemon?.id ?? 'N/A'}
         </Typography>
