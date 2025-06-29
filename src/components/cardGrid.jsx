@@ -18,7 +18,13 @@ const CardGrid = ({ filter = '' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   // Get page from URL, default to 0
   const pageParam = parseInt(searchParams.get('page'), 10);
-  const page = isNaN(pageParam) || pageParam < 0 ? 0 : pageParam;
+  // Always reset to page 0 when filter changes
+  const [internalPage, setInternalPage] = useState(0);
+  const page = filter
+    ? internalPage
+    : isNaN(pageParam) || pageParam < 0
+      ? 0
+      : pageParam;
   // Fetch all names/urls on mount
   useEffect(() => {
     axios
@@ -29,19 +35,35 @@ const CardGrid = ({ filter = '' }) => {
   }, []);
   // Update URL when page changes
   const setPage = (newPage) => {
-    setSearchParams((params) => {
-      params.set('page', newPage);
-      return params;
-    });
+    if (filter) {
+      setInternalPage(newPage);
+    } else {
+      setSearchParams((params) => {
+        params.set('page', newPage);
+        return params;
+      });
+    }
   };
   useEffect(() => {
     setLoading(true);
-    // If filter is active, use filtered list, else use paginated API
+    // If filter is active, always reset to page 0 on filter change
     if (filter) {
-      // Filter allPokemonList by name
-      const filteredList = allPokemonList.filter((p) =>
-        p.name.toLowerCase().includes(filter.toLowerCase()),
-      );
+      if (internalPage !== 0 && page === 0) setInternalPage(0);
+      // Filter allPokemonList by name or id
+      const filterLower = filter.toLowerCase();
+      const filterNum = Number(filterLower);
+      const filteredList = allPokemonList.filter((p) => {
+        // Name match
+        if (p.name.toLowerCase().includes(filterLower)) return true;
+        // ID match (if filter is a number)
+        if (!isNaN(filterNum) && filterNum > 0) {
+          // Extract id from URL (last segment before trailing slash)
+          const urlParts = p.url.split('/').filter(Boolean);
+          const pokeId = Number(urlParts[urlParts.length - 1]);
+          if (pokeId === filterNum) return true;
+        }
+        return false;
+      });
       setCount(filteredList.length);
       // Paginate filtered list
       const pageResults = filteredList.slice(
@@ -94,6 +116,10 @@ const CardGrid = ({ filter = '' }) => {
         });
     }
   }, [page, filter, allPokemonList]);
+  // Reset internalPage to 0 when filter changes
+  useEffect(() => {
+    if (filter) setInternalPage(0);
+  }, [filter]);
   // Filter after fetching details (for current page's data)
   const filteredEntries = pokemonData ? Object.entries(pokemonData) : [];
   // Calculate total pages
