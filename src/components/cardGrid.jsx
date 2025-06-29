@@ -2,7 +2,18 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import { Button, CircularProgress, Grid } from '@mui/material';
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControl,
+  Grid,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from '@mui/material';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -10,6 +21,27 @@ import { useSearchParams } from 'react-router-dom';
 import '../css/cardGrid.css';
 import PokemonCard from './pokemonCard';
 const cardsPerPage = 18;
+const POKEMON_TYPES = [
+  'Bug',
+  'Dark',
+  'Dragon',
+  'Electric',
+  'Fairy',
+  'Fighting',
+  'Fire',
+  'Flying',
+  'Ghost',
+  'Grass',
+  'Ground',
+  'Ice',
+  'Normal',
+  'Poison',
+  'Psychic',
+  'Rock',
+  'Steel',
+  'Water',
+];
+
 const CardGrid = ({ filter = '' }) => {
   const [pokemonData, setPokemonData] = useState(null);
   const [allPokemonList, setAllPokemonList] = useState([]); // List of all names/urls
@@ -20,11 +52,25 @@ const CardGrid = ({ filter = '' }) => {
   const pageParam = parseInt(searchParams.get('page'), 10);
   // Always reset to page 0 when filter changes
   const [internalPage, setInternalPage] = useState(0);
+  const [sortOption, setSortOption] = useState('default');
+  const [selectedTypes, setSelectedTypes] = useState([]); // For type filter
   const page = filter
     ? internalPage
     : isNaN(pageParam) || pageParam < 0
       ? 0
       : pageParam;
+
+  const handleSortChange = (event) => {
+    setSortOption(event.target.value);
+    if (filter) setInternalPage(0);
+  };
+
+  const handleTypeChange = (event) => {
+    const value = event.target.value;
+    setSelectedTypes(typeof value === 'string' ? value.split(',') : value);
+    if (filter) setInternalPage(0);
+  };
+
   // Fetch all names/urls on mount
   useEffect(() => {
     axios
@@ -46,36 +92,62 @@ const CardGrid = ({ filter = '' }) => {
   };
   useEffect(() => {
     setLoading(true);
-    // If filter is active, always reset to page 0 on filter change
-    if (filter) {
-      if (internalPage !== 0 && page === 0) setInternalPage(0);
-      // Filter allPokemonList by name or id
+    // If any filter, sort, or type filter is active, use filtered logic
+    if (filter || sortOption !== 'default' || selectedTypes.length > 0) {
       const filterLower = filter.toLowerCase();
       const filterNum = Number(filterLower);
-      const filteredList = allPokemonList.filter((p) => {
-        // Name match
-        if (p.name.toLowerCase().includes(filterLower)) return true;
-        // ID match (if filter is a number)
-        if (!isNaN(filterNum) && filterNum > 0) {
-          // Extract id from URL (last segment before trailing slash)
+      // Filter by name/id (from allPokemonList)
+      let filteredList = allPokemonList.filter((p) => {
+        if (filter && p.name.toLowerCase().includes(filterLower)) return true;
+        if (filter && !isNaN(filterNum) && filterNum > 0) {
           const urlParts = p.url.split('/').filter(Boolean);
           const pokeId = Number(urlParts[urlParts.length - 1]);
           if (pokeId === filterNum) return true;
         }
+        if (!filter) return true;
         return false;
       });
-      setCount(filteredList.length);
-      // Paginate filtered list
-      const pageResults = filteredList.slice(
-        page * cardsPerPage,
-        (page + 1) * cardsPerPage,
-      );
-      // Fetch details for these
-      Promise.all(pageResults.map((p) => axios.get(p.url))).then(
+
+      // Fetch details for all filteredList (not just current page)
+      Promise.all(filteredList.map((p) => axios.get(p.url))).then(
         (detailResponses) => {
-          const newPokemonData = {};
-          detailResponses.forEach((response) => {
-            const data = response.data;
+          // Filter by type (after fetching details)
+          let detailedList = detailResponses.map((response) => response.data);
+          if (
+            selectedTypes.length > 0 &&
+            selectedTypes.length < POKEMON_TYPES.length
+          ) {
+            detailedList = detailedList.filter((data) => {
+              // Get all type names for this pokemon, capitalized
+              const pokemonTypes = data.types.map(
+                (t) =>
+                  t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1),
+              );
+              return selectedTypes.every((type) => pokemonTypes.includes(type));
+            });
+          }
+
+          if (sortOption !== 'default') {
+            if (sortOption === 'name-asc') {
+              detailedList.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortOption === 'name-desc') {
+              detailedList.sort((a, b) => b.name.localeCompare(a.name));
+            } else if (sortOption === 'id-asc') {
+              detailedList.sort((a, b) => a.id - b.id);
+            } else if (sortOption === 'id-desc') {
+              detailedList.sort((a, b) => b.id - a.id);
+            }
+          }
+
+          // Paginate
+          setCount(detailedList.length);
+          const pageResults = detailedList.slice(
+            page * cardsPerPage,
+            (page + 1) * cardsPerPage,
+          );
+
+          let newPokemonData = {};
+          pageResults.forEach((data) => {
             newPokemonData[data.id] = {
               id: data.id,
               name: data.name,
@@ -88,7 +160,7 @@ const CardGrid = ({ filter = '' }) => {
         },
       );
     } else {
-      // No filter: use paginated API as before
+      // No filter, sort, or type filter: use paginated API as before
       axios
         .get(
           `https://pokeapi.co/api/v2/pokemon?limit=${cardsPerPage}&offset=${
@@ -115,40 +187,34 @@ const CardGrid = ({ filter = '' }) => {
           setLoading(false);
         });
     }
-  }, [page, filter, allPokemonList]);
-  // Reset internalPage to 0 when filter changes
+  }, [page, filter, allPokemonList, sortOption, selectedTypes]);
   useEffect(() => {
     if (filter) setInternalPage(0);
   }, [filter]);
-  // Filter after fetching details (for current page's data)
+
   const filteredEntries = pokemonData ? Object.entries(pokemonData) : [];
-  // Calculate total pages
   const totalPages = Math.ceil(count / cardsPerPage);
-  // Helper to get page numbers to show
+
   const getPageNumbers = () => {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i);
     }
+
     const pages = [];
     // Always show first page
     pages.push(0);
-    // Sliding window logic
+
     if (page <= 1) {
-      // Show 1,2,3,...last
       pages.push(1, 2, 3);
     } else if (page === 2) {
-      // Show 1,2,3,4,...last
       pages.push(1, 2, 3, 4);
     } else if (page >= totalPages - 2) {
-      // Near end: show last 4 pages
       for (let i = totalPages - 4; i < totalPages - 1; i++) {
         if (i > 0) pages.push(i);
       }
     } else {
-      // Show 1 ... page-1, page, page+1 ... last
       pages.push(page - 1, page, page + 1);
     }
-    // Always show last page
     if (totalPages > 1) pages.push(totalPages - 1);
     // Remove duplicates and sort
     const allPages = Array.from(new Set(pages)).filter(
@@ -159,6 +225,62 @@ const CardGrid = ({ filter = '' }) => {
   };
   return (
     <>
+      {/* Sort and Type Filter Dropdowns */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '1rem',
+          margin: '1rem 0',
+          flexWrap: 'wrap',
+        }}
+      >
+        <FormControl
+          variant='outlined'
+          size='small'
+          sx={{ minWidth: 180, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+        >
+          <InputLabel id='sort-label'>Sort By</InputLabel>
+          <Select
+            labelId='sort-label'
+            id='sort-select'
+            value={sortOption}
+            onChange={handleSortChange}
+            label='Sort By'
+          >
+            <MenuItem value='default'>Default</MenuItem>
+            <MenuItem value='name-asc'>Name (A-Z)</MenuItem>
+            <MenuItem value='name-desc'>Name (Z-A)</MenuItem>
+            <MenuItem value='id-asc'>ID (Ascending)</MenuItem>
+            <MenuItem value='id-desc'>ID (Descending)</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl
+          variant='outlined'
+          size='small'
+          sx={{ minWidth: 220, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+        >
+          <InputLabel id='type-label'>Filter by Type</InputLabel>
+          <Select
+            labelId='type-label'
+            id='type-select'
+            multiple
+            value={selectedTypes}
+            onChange={handleTypeChange}
+            input={<OutlinedInput label='Filter by Type' />}
+            renderValue={(selected) =>
+              selected.length === 0 ? 'All' : selected.join(', ')
+            }
+          >
+            {POKEMON_TYPES.map((type) => (
+              <MenuItem key={type} value={type}>
+                <Checkbox checked={selectedTypes.indexOf(type) > -1} />
+                <ListItemText primary={type} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
       {loading || !pokemonData ? (
         <div
           style={{
@@ -184,7 +306,7 @@ const CardGrid = ({ filter = '' }) => {
           <Grid container spacing={4} className='card-grid'>
             {filteredEntries.length === 0 ? (
               <Grid item xs={12} style={{ textAlign: 'center' }}>
-                <h2>No Pokémon found.</h2>
+                <h2>No Pokemon found.</h2>
               </Grid>
             ) : (
               filteredEntries.map(([, pokemon]) => (

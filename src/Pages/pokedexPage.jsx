@@ -21,8 +21,8 @@ const PokedexPage = () => {
         <TextField
           onChange={handleFilterChange}
           variant='outlined'
-          label='Search Pokémon'
-          placeholder='Enter Pokémon name or ID'
+          label='Search Pokemon '
+          placeholder='Enter Pokemon  name or ID'
           sx={{
             marginTop: '20px',
             width: '300px',
