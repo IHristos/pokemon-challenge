@@ -14,12 +14,22 @@ const cardsPerPage = 18;
 
 const CardGrid = ({ filter = '' }) => {
   const [pokemonData, setPokemonData] = useState(null);
+  const [allPokemonList, setAllPokemonList] = useState([]); // List of all names/urls
   const [count, setCount] = useState(0); // Total number of pokemons
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   // Get page from URL, default to 0
   const pageParam = parseInt(searchParams.get('page'), 10);
   const page = isNaN(pageParam) || pageParam < 0 ? 0 : pageParam;
+
+  // Fetch all names/urls on mount
+  useEffect(() => {
+    axios
+      .get('https://pokeapi.co/api/v2/pokemon?limit=2000')
+      .then((response) => {
+        setAllPokemonList(response.data.results);
+      });
+  }, []);
 
   // Update URL when page changes
   const setPage = (newPage) => {
@@ -31,39 +41,67 @@ const CardGrid = ({ filter = '' }) => {
 
   useEffect(() => {
     setLoading(true);
-    axios
-      .get(
-        `https://pokeapi.co/api/v2/pokemon?limit=${cardsPerPage}&offset=${
-          page * cardsPerPage
-        }`,
-      )
-      .then(async (response) => {
-        const { results, count } = response.data;
-        setCount(count);
-        const detailResponses = await Promise.all(
-          results.map((pokemon) => axios.get(pokemon.url)),
-        );
-        const newPokemonData = {};
-        detailResponses.forEach((response) => {
-          const data = response.data;
-          newPokemonData[data.id] = {
-            id: data.id,
-            name: data.name,
-            sprite: data.sprites.front_default,
-            types: data.types,
-          };
+    // If filter is active, use filtered list, else use paginated API
+    if (filter) {
+      // Filter allPokemonList by name
+      const filteredList = allPokemonList.filter((p) =>
+        p.name.toLowerCase().includes(filter.toLowerCase()),
+      );
+      setCount(filteredList.length);
+      // Paginate filtered list
+      const pageResults = filteredList.slice(
+        page * cardsPerPage,
+        (page + 1) * cardsPerPage,
+      );
+      // Fetch details for these
+      Promise.all(pageResults.map((p) => axios.get(p.url))).then(
+        (detailResponses) => {
+          const newPokemonData = {};
+          detailResponses.forEach((response) => {
+            const data = response.data;
+            newPokemonData[data.id] = {
+              id: data.id,
+              name: data.name,
+              sprite: data.sprites.front_default,
+              types: data.types,
+            };
+          });
+          setPokemonData(newPokemonData);
+          setLoading(false);
+        },
+      );
+    } else {
+      // No filter: use paginated API as before
+      axios
+        .get(
+          `https://pokeapi.co/api/v2/pokemon?limit=${cardsPerPage}&offset=${
+            page * cardsPerPage
+          }`,
+        )
+        .then(async (response) => {
+          const { results, count } = response.data;
+          setCount(count);
+          const detailResponses = await Promise.all(
+            results.map((pokemon) => axios.get(pokemon.url)),
+          );
+          const newPokemonData = {};
+          detailResponses.forEach((response) => {
+            const data = response.data;
+            newPokemonData[data.id] = {
+              id: data.id,
+              name: data.name,
+              sprite: data.sprites.front_default,
+              types: data.types,
+            };
+          });
+          setPokemonData(newPokemonData);
+          setLoading(false);
         });
-        setPokemonData(newPokemonData);
-        setLoading(false);
-      });
-  }, [page]);
+    }
+  }, [page, filter, allPokemonList]);
 
-  // Filter after fetching details
-  const filteredEntries = pokemonData
-    ? Object.entries(pokemonData).filter(([, pokemon]) =>
-        pokemon.name.toLowerCase().includes(filter.toLowerCase()),
-      )
-    : [];
+  // Filter after fetching details (for current page's data)
+  const filteredEntries = pokemonData ? Object.entries(pokemonData) : [];
 
   // Calculate total pages
   const totalPages = Math.ceil(count / cardsPerPage);
