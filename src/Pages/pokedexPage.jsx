@@ -1,6 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { TextField } from '@mui/material';
 import { useState } from 'react';
+import Background from '../components/background';
 import CardGrid from '../components/cardGrid';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
@@ -13,6 +14,7 @@ const PokedexPage = () => {
   };
   return (
     <>
+      <Background />
       <Navbar></Navbar>
       <div>
         <SearchIcon />

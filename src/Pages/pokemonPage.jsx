@@ -2,6 +2,7 @@ import { Button, CircularProgress, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Background from '../components/background';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
@@ -31,6 +32,7 @@ const PokemonPage = () => {
     const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
     const imageKey = `../assets/shiny/${pokemon?.id}.png`;
     const pokemonFullImage = images[imageKey]?.default;
+    const noImageAvailable = images['../assets/shiny/0.png']?.default;
     const capitalizedName = capitalizeFirstChar(pokemon.name);
 
     return (
@@ -40,8 +42,14 @@ const PokemonPage = () => {
           {capitalizedName}
           <img
             style={{ width: '300px', height: '300px' }}
-            src={pokemonFullImage}
+            src={pokemonFullImage || noImageAvailable}
+            alt={capitalizedName}
           />
+          {!pokemonFullImage && noImageAvailable && (
+            <Typography variant='h5'>
+              No Available Image for this Pokemon
+            </Typography>
+          )}
         </Typography>
         <Typography variant='h2'>Pokemon Details:</Typography>
         <Typography variant='h3'>Height: {height}</Typography>
@@ -63,6 +71,7 @@ const PokemonPage = () => {
 
   return (
     <>
+      <Background />
       <Navbar />
       {pokemon === undefined && <CircularProgress color='secondary' />}
       {pokemon && getPokemon()}
@@ -70,9 +79,9 @@ const PokemonPage = () => {
         <>
           <img
             src={
-              import.meta.glob('../assets/shiny/0.png', { eager: true })[
-                '../assets/shiny/0.png'
-              ]?.default
+              import.meta.glob('../assets/shiny/missingNo.png', {
+                eager: true,
+              })['../assets/shiny/missingNo.png']?.default
             }
             alt='Pokemon not found'
             style={{ width: '300px', height: '300px' }}
