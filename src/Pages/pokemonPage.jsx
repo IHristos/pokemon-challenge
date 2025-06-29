@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Typography } from '@mui/material';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Background from '../components/background';
 import Footer from '../components/footer';
@@ -11,6 +11,10 @@ const PokemonPage = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(undefined);
   const navigate = useNavigate();
+
+  const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
+  const [imgSrc, setImgSrc] = useState(null);
+  const sprite = useRef(false);
 
   useEffect(() => {
     setPokemon(undefined);
@@ -24,14 +28,32 @@ const PokemonPage = () => {
       });
   }, [name]);
 
+  useEffect(() => {
+    if (!pokemon) return;
+    const imageKey = `../assets/shiny/${pokemon?.id}.png`;
+    const shinyImage = images[imageKey]?.default;
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
+    setImgSrc(shinyImage || spriteUrl);
+    sprite.current = false;
+  }, [pokemon]);
+
+  const handleImgError = () => {
+    if (!pokemon) return;
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
+    const defaultImage = images['../assets/shiny/0.png']?.default;
+    if (!sprite.current && imgSrc !== spriteUrl && spriteUrl) {
+      setImgSrc(spriteUrl);
+      sprite.current = true;
+    } else {
+      setImgSrc(defaultImage);
+    }
+  };
+
   const getPokemon = () => {
     if (!pokemon) {
       return <Typography variant='h4'>Loading...</Typography>;
     }
     const { id, species, height, weight, types } = pokemon;
-    const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
-    const imageKey = `../assets/shiny/${pokemon?.id}.png`;
-    const pokemonFullImage = images[imageKey]?.default;
     const noImageAvailable = images['../assets/shiny/0.png']?.default;
     const capitalizedName = capitalizeFirstChar(pokemon.name);
 
@@ -42,10 +64,11 @@ const PokemonPage = () => {
           {capitalizedName}
           <img
             style={{ width: '300px', height: '300px' }}
-            src={pokemonFullImage || noImageAvailable}
+            src={imgSrc || noImageAvailable}
             alt={capitalizedName}
+            onError={handleImgError}
           />
-          {!pokemonFullImage && noImageAvailable && (
+          {imgSrc === noImageAvailable && (
             <Typography variant='h5'>
               No Available Image for this Pokemon
             </Typography>
@@ -66,8 +89,6 @@ const PokemonPage = () => {
       </>
     );
   };
-
-  // I need to add an image for showing when the pokemon is not found (maybe the MissinNo pokemon card image, or the egg 0.png)
 
   return (
     <>
