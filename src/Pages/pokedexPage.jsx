@@ -1,50 +1,64 @@
-import SearchIcon from '@mui/icons-material/Search';
-import { TextField } from '@mui/material';
 import { useState } from 'react';
 import Background from '../components/background';
 import CardGrid from '../components/cardGrid';
+import FilterBar from '../components/filterBar';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 
 const PokedexPage = () => {
   const [filter, setFilter] = useState('');
+  const [sortOption, setSortOption] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState([]);
 
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
+  const handleFilterChange = (e) => setFilter(e.target.value);
+  const handleSortChange = (e) => {
+    if (e.target.value === 'id-asc') {
+      setSortOption('');
+    } else {
+      setSortOption(e.target.value);
+    }
   };
+  const handleTypeChange = (e) => setSelectedTypes(e.target.value);
+
+  const POKEMON_TYPES = [
+    'Bug',
+    'Dark',
+    'Dragon',
+    'Electric',
+    'Fairy',
+    'Fighting',
+    'Fire',
+    'Flying',
+    'Ghost',
+    'Grass',
+    'Ground',
+    'Ice',
+    'Normal',
+    'Poison',
+    'Psychic',
+    'Rock',
+    'Steel',
+    'Water',
+  ];
+
   return (
     <>
       <Background />
       <Navbar></Navbar>
-      <div>
-        <SearchIcon />
-        <TextField
-          onChange={handleFilterChange}
-          variant='outlined'
-          label='Search Pokemon '
-          placeholder='Enter Pokemon  name or ID'
-          sx={{
-            marginTop: '20px',
-            width: '300px',
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: 'maroon',
-              '& fieldset': {
-                borderColor: 'darkred',
-              },
-              '&:hover fieldset': {
-                borderColor: 'darkred',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'seashell',
-              },
-              '& input': {
-                color: 'seashell',
-              },
-            },
-          }}
-        />
-      </div>
-      <CardGrid filter={filter} />
+      <FilterBar
+        filter={filter}
+        handleFilterChange={handleFilterChange}
+        sortOption={sortOption}
+        handleSortChange={handleSortChange}
+        selectedTypes={selectedTypes}
+        handleTypeChange={handleTypeChange}
+        POKEMON_TYPES={POKEMON_TYPES}
+      />
+      <CardGrid
+        filter={filter}
+        sortOption={sortOption}
+        selectedTypes={selectedTypes}
+      />
       <Footer />
     </>
   );

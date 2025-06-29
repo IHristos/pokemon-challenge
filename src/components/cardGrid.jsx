@@ -2,24 +2,14 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import {
-  Button,
-  Checkbox,
-  CircularProgress,
-  FormControl,
-  Grid,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from '@mui/material';
+import { Button, CircularProgress, Grid } from '@mui/material';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import '../css/cardGrid.css';
 import PokemonCard from './pokemonCard';
+
 const cardsPerPage = 18;
 const POKEMON_TYPES = [
   'Bug',
@@ -42,36 +32,25 @@ const POKEMON_TYPES = [
   'Water',
 ];
 
-const CardGrid = ({ filter = '' }) => {
+const CardGrid = ({
+  filter = '',
+  sortOption = 'default',
+  selectedTypes = [],
+}) => {
   const [pokemonData, setPokemonData] = useState(null);
-  const [allPokemonList, setAllPokemonList] = useState([]); // List of all names/urls
-  const [count, setCount] = useState(0); // Total number of pokemons
+  const [allPokemonList, setAllPokemonList] = useState([]);
+  const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  // Get page from URL, default to 0
   const pageParam = parseInt(searchParams.get('page'), 10);
-  // Always reset to page 0 when filter changes
   const [internalPage, setInternalPage] = useState(0);
-  const [sortOption, setSortOption] = useState('default');
-  const [selectedTypes, setSelectedTypes] = useState([]); // For type filter
+
   const page = filter
     ? internalPage
     : isNaN(pageParam) || pageParam < 0
       ? 0
       : pageParam;
 
-  const handleSortChange = (event) => {
-    setSortOption(event.target.value);
-    if (filter) setInternalPage(0);
-  };
-
-  const handleTypeChange = (event) => {
-    const value = event.target.value;
-    setSelectedTypes(typeof value === 'string' ? value.split(',') : value);
-    if (filter) setInternalPage(0);
-  };
-
-  // Fetch all names/urls on mount
   useEffect(() => {
     axios
       .get('https://pokeapi.co/api/v2/pokemon?limit=2000')
@@ -79,7 +58,7 @@ const CardGrid = ({ filter = '' }) => {
         setAllPokemonList(response.data.results);
       });
   }, []);
-  // Update URL when page changes
+
   const setPage = (newPage) => {
     if (filter) {
       setInternalPage(newPage);
@@ -90,13 +69,13 @@ const CardGrid = ({ filter = '' }) => {
       });
     }
   };
+
   useEffect(() => {
     setLoading(true);
-    // If any filter, sort, or type filter is active, use filtered logic
     if (filter || sortOption !== 'default' || selectedTypes.length > 0) {
       const filterLower = filter.toLowerCase();
       const filterNum = Number(filterLower);
-      // Filter by name/id (from allPokemonList)
+
       let filteredList = allPokemonList.filter((p) => {
         if (filter && p.name.toLowerCase().includes(filterLower)) return true;
         if (filter && !isNaN(filterNum) && filterNum > 0) {
@@ -108,17 +87,14 @@ const CardGrid = ({ filter = '' }) => {
         return false;
       });
 
-      // Fetch details for all filteredList (not just current page)
       Promise.all(filteredList.map((p) => axios.get(p.url))).then(
         (detailResponses) => {
-          // Filter by type (after fetching details)
           let detailedList = detailResponses.map((response) => response.data);
           if (
             selectedTypes.length > 0 &&
             selectedTypes.length < POKEMON_TYPES.length
           ) {
             detailedList = detailedList.filter((data) => {
-              // Get all type names for this pokemon, capitalized
               const pokemonTypes = data.types.map(
                 (t) =>
                   t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1),
@@ -139,7 +115,6 @@ const CardGrid = ({ filter = '' }) => {
             }
           }
 
-          // Paginate
           setCount(detailedList.length);
           const pageResults = detailedList.slice(
             page * cardsPerPage,
@@ -160,7 +135,6 @@ const CardGrid = ({ filter = '' }) => {
         },
       );
     } else {
-      // No filter, sort, or type filter: use paginated API as before
       axios
         .get(
           `https://pokeapi.co/api/v2/pokemon?limit=${cardsPerPage}&offset=${
@@ -188,6 +162,7 @@ const CardGrid = ({ filter = '' }) => {
         });
     }
   }, [page, filter, allPokemonList, sortOption, selectedTypes]);
+
   useEffect(() => {
     if (filter) setInternalPage(0);
   }, [filter]);
@@ -201,7 +176,7 @@ const CardGrid = ({ filter = '' }) => {
     }
 
     const pages = [];
-    // Always show first page
+
     pages.push(0);
 
     if (page <= 1) {
@@ -216,71 +191,16 @@ const CardGrid = ({ filter = '' }) => {
       pages.push(page - 1, page, page + 1);
     }
     if (totalPages > 1) pages.push(totalPages - 1);
-    // Remove duplicates and sort
+
     const allPages = Array.from(new Set(pages)).filter(
       (p) => p >= 0 && p < totalPages,
     );
     allPages.sort((a, b) => a - b);
     return allPages;
   };
+
   return (
     <>
-      {/* Sort and Type Filter Dropdowns */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '1rem',
-          margin: '1rem 0',
-          flexWrap: 'wrap',
-        }}
-      >
-        <FormControl
-          variant='outlined'
-          size='small'
-          sx={{ minWidth: 180, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
-        >
-          <InputLabel id='sort-label'>Sort By</InputLabel>
-          <Select
-            labelId='sort-label'
-            id='sort-select'
-            value={sortOption}
-            onChange={handleSortChange}
-            label='Sort By'
-          >
-            <MenuItem value='default'>Default</MenuItem>
-            <MenuItem value='name-asc'>Name (A-Z)</MenuItem>
-            <MenuItem value='name-desc'>Name (Z-A)</MenuItem>
-            <MenuItem value='id-asc'>ID (Ascending)</MenuItem>
-            <MenuItem value='id-desc'>ID (Descending)</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl
-          variant='outlined'
-          size='small'
-          sx={{ minWidth: 220, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
-        >
-          <InputLabel id='type-label'>Filter by Type</InputLabel>
-          <Select
-            labelId='type-label'
-            id='type-select'
-            multiple
-            value={selectedTypes}
-            onChange={handleTypeChange}
-            input={<OutlinedInput label='Filter by Type' />}
-            renderValue={(selected) =>
-              selected.length === 0 ? 'All' : selected.join(', ')
-            }
-          >
-            {POKEMON_TYPES.map((type) => (
-              <MenuItem key={type} value={type}>
-                <Checkbox checked={selectedTypes.indexOf(type) > -1} />
-                <ListItemText primary={type} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
       {loading || !pokemonData ? (
         <div
           style={{
@@ -333,7 +253,6 @@ const CardGrid = ({ filter = '' }) => {
               alignItems: 'center',
             }}
           >
-            {/* First page */}
             <Button
               onClick={() => setPage(0)}
               disabled={page === 0}
@@ -341,7 +260,6 @@ const CardGrid = ({ filter = '' }) => {
             >
               <FirstPageIcon />
             </Button>
-            {/* -10 pages */}
             <Button
               onClick={() => setPage(Math.max(0, page - 10))}
               disabled={page < 10}
@@ -349,7 +267,6 @@ const CardGrid = ({ filter = '' }) => {
             >
               -10
             </Button>
-            {/* Previous page */}
             <Button
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
@@ -357,9 +274,7 @@ const CardGrid = ({ filter = '' }) => {
             >
               <ChevronLeftIcon />
             </Button>
-            {/* Page numbers */}
             {getPageNumbers().map((p, idx, arr) => {
-              // Add ellipsis if gap between numbers
               const prev = arr[idx - 1];
               const showEllipsis = idx > 0 && p - prev > 1;
               return [
@@ -375,7 +290,6 @@ const CardGrid = ({ filter = '' }) => {
                 </Button>,
               ];
             })}
-            {/* Next page */}
             <Button
               onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
               disabled={page === totalPages - 1}
@@ -383,7 +297,6 @@ const CardGrid = ({ filter = '' }) => {
             >
               <ChevronRightIcon />
             </Button>
-            {/* +10 pages */}
             <Button
               onClick={() => setPage(Math.min(totalPages - 1, page + 10))}
               disabled={page > totalPages - 11}
@@ -391,7 +304,6 @@ const CardGrid = ({ filter = '' }) => {
             >
               +10
             </Button>
-            {/* Last page */}
             <Button
               onClick={() => setPage(totalPages - 1)}
               disabled={page === totalPages - 1}
@@ -405,7 +317,11 @@ const CardGrid = ({ filter = '' }) => {
     </>
   );
 };
+
 CardGrid.propTypes = {
   filter: PropTypes.string,
+  sortOption: PropTypes.string,
+  selectedTypes: PropTypes.array,
 };
+
 export default CardGrid;
