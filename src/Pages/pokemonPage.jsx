@@ -6,16 +6,13 @@ import Background from '../components/background';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
-
 const PokemonPage = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(undefined);
   const navigate = useNavigate();
-
   const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
   const [imgSrc, setImgSrc] = useState(null);
   const sprite = useRef(false);
-
   useEffect(() => {
     setPokemon(undefined);
     axios
@@ -27,7 +24,6 @@ const PokemonPage = () => {
         setPokemon(false);
       });
   }, [name]);
-
   useEffect(() => {
     if (!pokemon) return;
     const imageKey = `../assets/shiny/${pokemon?.id}.png`;
@@ -36,7 +32,6 @@ const PokemonPage = () => {
     setImgSrc(shinyImage || spriteUrl);
     sprite.current = false;
   }, [pokemon]);
-
   const handleImgError = () => {
     if (!pokemon) return;
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
@@ -48,7 +43,6 @@ const PokemonPage = () => {
       setImgSrc(defaultImage);
     }
   };
-
   const getPokemon = () => {
     if (!pokemon) {
       return <Typography variant='h4'>Loading...</Typography>;
@@ -56,7 +50,6 @@ const PokemonPage = () => {
     const { id, species, height, weight, types } = pokemon;
     const noImageAvailable = images['../assets/shiny/0.png']?.default;
     const capitalizedName = capitalizeFirstChar(pokemon.name);
-
     return (
       <>
         <Typography variant='h1'>
@@ -89,7 +82,6 @@ const PokemonPage = () => {
       </>
     );
   };
-
   return (
     <>
       <Background />
@@ -122,5 +114,4 @@ const PokemonPage = () => {
     </>
   );
 };
-
 export default PokemonPage;

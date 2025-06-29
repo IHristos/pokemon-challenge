@@ -9,9 +9,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import '../css/cardGrid.css';
 import PokemonCard from './pokemonCard';
-
 const cardsPerPage = 18;
-
 const CardGrid = ({ filter = '' }) => {
   const [pokemonData, setPokemonData] = useState(null);
   const [allPokemonList, setAllPokemonList] = useState([]); // List of all names/urls
@@ -21,7 +19,6 @@ const CardGrid = ({ filter = '' }) => {
   // Get page from URL, default to 0
   const pageParam = parseInt(searchParams.get('page'), 10);
   const page = isNaN(pageParam) || pageParam < 0 ? 0 : pageParam;
-
   // Fetch all names/urls on mount
   useEffect(() => {
     axios
@@ -30,7 +27,6 @@ const CardGrid = ({ filter = '' }) => {
         setAllPokemonList(response.data.results);
       });
   }, []);
-
   // Update URL when page changes
   const setPage = (newPage) => {
     setSearchParams((params) => {
@@ -38,7 +34,6 @@ const CardGrid = ({ filter = '' }) => {
       return params;
     });
   };
-
   useEffect(() => {
     setLoading(true);
     // If filter is active, use filtered list, else use paginated API
@@ -99,13 +94,10 @@ const CardGrid = ({ filter = '' }) => {
         });
     }
   }, [page, filter, allPokemonList]);
-
   // Filter after fetching details (for current page's data)
   const filteredEntries = pokemonData ? Object.entries(pokemonData) : [];
-
   // Calculate total pages
   const totalPages = Math.ceil(count / cardsPerPage);
-
   // Helper to get page numbers to show
   const getPageNumbers = () => {
     if (totalPages <= 7) {
@@ -139,7 +131,6 @@ const CardGrid = ({ filter = '' }) => {
     allPages.sort((a, b) => a - b);
     return allPages;
   };
-
   return (
     <>
       {loading || !pokemonData ? (
@@ -164,14 +155,17 @@ const CardGrid = ({ filter = '' }) => {
         </div>
       ) : (
         <>
-          <Grid container spacing={6} className='card-grid'>
+          <Grid container spacing={4} className='card-grid'>
             {filteredEntries.length === 0 ? (
               <Grid item xs={12} style={{ textAlign: 'center' }}>
                 <h2>No Pokémon found.</h2>
               </Grid>
             ) : (
               filteredEntries.map(([, pokemon]) => (
-                <Grid size={{ xs: 12, sm: 6, md: 2 }} key={pokemon.id}>
+                <Grid
+                  size={{ xs: 12, sm: 8, md: 6, lg: 4, xl: 2 }}
+                  key={pokemon.id}
+                >
                   <PokemonCard
                     key={pokemon.id}
                     pokemonId={pokemon.id}
@@ -266,5 +260,4 @@ const CardGrid = ({ filter = '' }) => {
 CardGrid.propTypes = {
   filter: PropTypes.string,
 };
-
 export default CardGrid;
