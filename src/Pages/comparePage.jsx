@@ -10,6 +10,9 @@ import Navbar from '../components/navbar';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
 const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
+const typeIcons = import.meta.glob('../assets/typeIcons/*.svg', {
+  eager: true,
+});
 
 const CompareCard = ({ pokemon, onAddClick }) => {
   const [imgSrc, setImgSrc] = useState(null);
@@ -42,11 +45,12 @@ const CompareCard = ({ pokemon, onAddClick }) => {
     <Card
       sx={{
         width: 350,
-        height: 450,
+        height: 'auto',
+        minHeight: 450,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: pokemon ? 'space-between' : 'center',
         m: 2,
         p: 0,
       }}
@@ -54,25 +58,92 @@ const CompareCard = ({ pokemon, onAddClick }) => {
       {pokemon ? (
         <>
           <CardContent sx={{ width: '100%' }}>
-            <Typography variant='h5'>{capitalizedName}</Typography>
-            <Typography variant='h5'>{pokemon.id}</Typography>
+            <Typography variant='h5' sx={{ textAlign: 'center' }}>
+              {capitalizedName}
+            </Typography>
             <img
-              style={{ width: '200px', height: '200px' }}
+              style={{
+                width: '200px',
+                height: '200px',
+                display: 'block',
+                margin: '0 auto',
+              }}
               src={imgSrc || noImageAvailable}
               alt={capitalizedName}
               onError={handleImgError}
             />
             {imgSrc === noImageAvailable && (
-              <Typography variant='h6'>
+              <Typography variant='h6' sx={{ textAlign: 'center' }}>
                 No Available Image for this Pokemon
               </Typography>
             )}
-            <Typography variant='h6'>
+            <Typography
+              variant='h6'
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 1,
+              }}
+            >
               {pokemon.types && pokemon.types.length > 0
-                ? pokemon.types
-                    .map((t) => capitalizeFirstChar(t.type.name))
-                    .join(', ')
+                ? pokemon.types.map((t) => {
+                    const typeName = t.type.name;
+                    const iconKey = `../assets/typeIcons/${typeName}.svg`;
+                    const iconSrc = typeIcons[iconKey]?.default;
+                    return (
+                      <span
+                        key={typeName}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          marginRight: 8,
+                        }}
+                      >
+                        {iconSrc && (
+                          <span className={`type-icon-bg ${typeName}`}>
+                            <img
+                              src={iconSrc}
+                              alt={typeName}
+                              className='type-icon'
+                            />
+                          </span>
+                        )}
+                        {capitalizeFirstChar(typeName)}
+                      </span>
+                    );
+                  })
                 : 'Unknown type'}
+            </Typography>
+            {pokemon.stats && (
+              <Box sx={{ mt: 2 }}>
+                {[
+                  'hp',
+                  'attack',
+                  'defense',
+                  'special-attack',
+                  'special-defense',
+                  'speed',
+                ].map((statKey) => {
+                  const statObj = pokemon.stats.find(
+                    (s) => s.stat.name === statKey,
+                  );
+                  return (
+                    <Typography
+                      key={statKey}
+                      variant='body1'
+                      sx={{ textAlign: 'center' }}
+                    >
+                      {capitalizeFirstChar(statKey.replace('-', ' '))}:{' '}
+                      {statObj ? statObj.base_stat : 'N/A'}
+                    </Typography>
+                  );
+                })}
+              </Box>
+            )}
+            <Typography variant='h5' sx={{ textAlign: 'center' }}>
+              {pokemon.id}
             </Typography>
           </CardContent>
           <Button
@@ -87,7 +158,13 @@ const CompareCard = ({ pokemon, onAddClick }) => {
       ) : (
         <Button
           onClick={onAddClick}
-          sx={{ flexDirection: 'column', color: 'grey.500' }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            color: 'grey.500',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <AddIcon sx={{ fontSize: 80 }} />
           <Typography>Add pokemon to compare</Typography>

@@ -137,6 +137,7 @@ const CardGrid = ({
               name: data.name,
               sprite: data.sprites.front_default,
               types: data.types,
+              stats: data.stats, // Add stats here
             };
           });
           setPokemonData(newPokemonData);
