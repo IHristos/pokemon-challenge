@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Background from '../components/background';
 import { useCompare } from '../components/compareContext';
+import CompareRadarChart from '../components/CompareRadarChart';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
@@ -192,12 +193,27 @@ const ComparePage = () => {
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '80vh',
+          gap: 4,
         }}
       >
         <CompareCard
           pokemon={compareList[0]}
           onAddClick={() => handleAddClick(0)}
         />
+        <Box
+          sx={{
+            width: 400,
+            height: 400,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <CompareRadarChart
+            pokemon1={compareList[0]}
+            pokemon2={compareList[1]}
+          />
+        </Box>
         <CompareCard
           pokemon={compareList[1]}
           onAddClick={() => handleAddClick(1)}
