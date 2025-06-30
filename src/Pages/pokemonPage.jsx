@@ -83,11 +83,32 @@ const PokemonPage = () => {
       </>
     );
   };
+
   return (
     <>
       <Background />
       <Navbar />
-      {pokemon === undefined && <CircularProgress color='secondary' />}
+      {pokemon === undefined && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <h1>Loading...</h1>
+            <CircularProgress color='error' />
+          </div>
+        </div>
+      )}
       {pokemon && getPokemon()}
       {pokemon === false && (
         <>

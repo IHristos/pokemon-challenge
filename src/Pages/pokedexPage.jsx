@@ -44,7 +44,7 @@ const PokedexPage = () => {
   return (
     <>
       <Background />
-      <Navbar></Navbar>
+      <Navbar />
       <FilterBar
         filter={filter}
         handleFilterChange={handleFilterChange}

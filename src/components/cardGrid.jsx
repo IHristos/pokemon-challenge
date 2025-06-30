@@ -240,7 +240,7 @@ const CardGrid = ({
             }}
           >
             <h1>Loading...</h1>
-            <CircularProgress color='secondary' />
+            <CircularProgress color='error' />
           </div>
         </div>
       ) : (

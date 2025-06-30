@@ -24,15 +24,16 @@ const FilterBar = ({
 }) => (
   <Box
     sx={{
+      position: 'sticky',
+      top: 60,
+      zIndex: 1,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      backdropFilter: 'blur(10px)',
+      backgroundColor: 'rgba(59, 59, 59, 0.1)',
+      backdropFilter: 'blur(15px)',
       padding: '0.5rem 1rem',
-      borderRadius: '8px',
       flexWrap: 'wrap',
-      gap: 2,
     }}
   >
     {/* Search Bar on the left */}
@@ -40,19 +41,21 @@ const FilterBar = ({
       value={filter}
       onChange={handleFilterChange}
       variant='outlined'
-      label='Search Pokemon'
       placeholder='Enter Pokemon name or ID'
       size='small'
       slotProps={{
-        startAdornment: (
-          <InputAdornment position='start'>
-            <SearchIcon sx={{ color: 'seashell' }} />
-          </InputAdornment>
-        ),
+        input: {
+          startAdornment: (
+            <InputAdornment position='start'>
+              <SearchIcon sx={{ color: 'seashell' }} />
+            </InputAdornment>
+          ),
+        },
       }}
       sx={{
-        width: '240px',
+        width: { xs: '100%', sm: '240px' },
         backgroundColor: 'maroon',
+        mb: { xs: 2, sm: 0 },
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'maroon',
           '& fieldset': { borderColor: 'darkred' },
@@ -60,19 +63,35 @@ const FilterBar = ({
           '&.Mui-focused fieldset': { borderColor: 'seashell' },
           '& input': { color: 'seashell' },
         },
-        // Remove label color override!
       }}
     />
 
-    {/* Sort and Type filter on the right */}
-    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 2,
+        alignItems: { xs: 'stretch', sm: 'center' },
+        width: { xs: '100%', sm: 'auto' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        '& > .MuiFormControl-root': {
+          width: { xs: '100%', sm: 'auto' },
+          mb: { xs: 2, sm: 0 },
+        },
+      }}
+    >
+      {/* Sort filter */}
       <FormControl
         variant='outlined'
         size='small'
         sx={{
           minWidth: 180,
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '4px',
+          borderRadius: '10px',
+          '& .MuiInputLabel-root': {
+            color: 'rgba(255, 255, 255, 0.5)',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: 'seashell',
+          },
         }}
       >
         <InputLabel id='sort-label'>Sort By</InputLabel>
@@ -83,17 +102,17 @@ const FilterBar = ({
           onChange={handleSortChange}
           label='Sort By'
           sx={{
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            backgroundColor: 'maroon',
             '& .MuiSelect-select': {
-              color: sortOption !== 'default' ? 'gold' : '#aaa',
+              color: 'seashell',
             },
-            '.MuiSelect-icon': { color: 'red' },
-            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'red' },
+            '.MuiSelect-icon': { color: 'seashell' },
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'maroon' },
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'orange',
+              borderColor: 'seashell',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'red',
+              borderColor: 'maroon',
             },
           }}
         >
@@ -103,10 +122,20 @@ const FilterBar = ({
           <MenuItem value='name-desc'>Name (Z-A)</MenuItem>
         </Select>
       </FormControl>
+      {/* Type filter */}
       <FormControl
         variant='outlined'
         size='small'
-        sx={{ minWidth: 220, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+        sx={{
+          minWidth: 220,
+          borderRadius: '10px',
+          '& .MuiInputLabel-root': {
+            color: 'rgba(255, 255, 255, 0.5)',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: 'seashell',
+          },
+        }}
       >
         <InputLabel id='type-label'>Filter by Type</InputLabel>
         <Select
@@ -119,6 +148,20 @@ const FilterBar = ({
           renderValue={(selected) =>
             selected.length === 0 ? 'All' : selected.join(', ')
           }
+          sx={{
+            backgroundColor: 'maroon',
+            '& .MuiSelect-select': {
+              color: 'seashell',
+            },
+            '.MuiSelect-icon': { color: 'seashell' },
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'maroon' },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'seashell',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'maroon',
+            },
+          }}
         >
           {POKEMON_TYPES.map((type) => (
             <MenuItem key={type} value={type}>

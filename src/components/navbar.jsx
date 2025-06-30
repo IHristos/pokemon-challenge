@@ -16,7 +16,7 @@ import {
 import * as React from 'react';
 import '../index.css';
 
-const pages = ['Home', 'Pokemons', 'About'];
+const pages = ['HOME', 'COMPARE', 'ABOUT'];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -30,7 +30,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position='static'>
+    <AppBar position='sticky' sx={{ backgroundColor: 'rgb(59, 59, 59)' }}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <PokemonIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 5 }} />
@@ -47,9 +47,14 @@ function Navbar() {
               textDecoration: 'none',
             }}
           >
-            POKEMON APP
+            POKEDEX APP
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'flex', md: 'none' },
+            }}
+          >
             <IconButton color='inherit' onClick={handleOpenNavMenu}>
               <MenuIcon />
             </IconButton>
