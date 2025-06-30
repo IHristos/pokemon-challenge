@@ -128,12 +128,12 @@ const CompareHexagon = ({ pokemon1, pokemon2 }) => {
     },
   };
 
-  return <Radar data={data} options={options} />;
-};
+  CompareHexagon.propTypes = {
+    pokemon1: PropTypes.object,
+    pokemon2: PropTypes.object,
+  };
 
-CompareHexagon.propTypes = {
-  pokemon1: PropTypes.object,
-  pokemon2: PropTypes.object,
+  return <Radar data={data} options={options} />;
 };
 
 export default CompareHexagon;
