@@ -23,31 +23,35 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
   return (
     <Card
       className='card'
-      sx={{ position: 'relative' }}
+      sx={{
+        position: 'relative',
+        backgroundColor: 'rgba(36, 36, 36, 0.85)',
+      }}
       onClick={() =>
         navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
       }
     >
       {showAddButton && (
         <IconButton
+          className='add-button'
           onClick={(e) => {
             e.stopPropagation();
             onAdd && onAdd(pokemon);
           }}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            zIndex: 2,
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            '&:hover': { backgroundColor: 'rgba(255,255,255,1)' },
-          }}
         >
-          <AddIcon color='primary' />
+          <AddIcon color='action' />
         </IconButton>
       )}
       <CardContent>
-        <Typography variant='h5' component='div' sx={{ textAlign: 'center' }}>
+        <Typography
+          variant='h5'
+          component='div'
+          sx={{
+            textAlign: 'center',
+            textShadow: '0 0 10px #98F9FB',
+            color: '#fff',
+          }}
+        >
           {capitalizedName ?? 'Unknown'}
         </Typography>
         <CardMedia
@@ -65,6 +69,7 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: 1,
+            color: '#fff',
           }}
         >
           {(pokemon?.types || []).map((typeObj) => {
@@ -93,7 +98,12 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
         <Typography
           variant='body2'
           color='text.secondary'
-          style={{ marginTop: '40px', textAlign: 'center' }}
+          style={{
+            marginTop: '40px',
+            textAlign: 'center',
+            textShadow: '0 0 5px #98F9FB',
+            color: '#fff',
+          }}
         >
           ID: {pokemon?.id ?? 'N/A'}
         </Typography>

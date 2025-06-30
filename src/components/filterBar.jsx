@@ -26,7 +26,7 @@ const FilterBar = ({
     sx={{
       position: 'sticky',
       top: 60,
-      zIndex: 1,
+      zIndex: 3,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -53,7 +53,8 @@ const FilterBar = ({
         },
       }}
       sx={{
-        width: { xs: '100%', sm: '240px' },
+        width: { xs: '100%', sm: '270px' },
+        borderRadius: '10px',
         backgroundColor: 'maroon',
         mb: { xs: 2, sm: 0 },
         '& .MuiOutlinedInput-root': {
@@ -62,6 +63,9 @@ const FilterBar = ({
           '&:hover fieldset': { borderColor: 'darkred' },
           '&.Mui-focused fieldset': { borderColor: 'seashell' },
           '& input': { color: 'seashell' },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'seashell',
+          },
         },
       }}
     />
