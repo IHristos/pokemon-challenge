@@ -6,6 +6,7 @@ import Background from '../components/background';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
+
 const PokemonPage = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(undefined);

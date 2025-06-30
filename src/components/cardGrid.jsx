@@ -46,7 +46,7 @@ const CardGrid = ({
   const pageParam = parseInt(searchParams.get('page'), 10);
   const [internalPage, setInternalPage] = useState(0);
 
-  const { addPokemonToCompare } = useCompare();
+  const { addPokemonToCompare, setPokemonAtIndex } = useCompare();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -209,8 +209,15 @@ const CardGrid = ({
 
   // Handler for adding to compare
   const handleAddToCompare = (pokemon) => {
-    addPokemonToCompare(pokemon);
-    navigate('/compare');
+    const params = new URLSearchParams(location.search);
+    const replaceIndex = params.get('replaceIndex');
+    if (replaceIndex !== null) {
+      setPokemonAtIndex(pokemon, Number(replaceIndex));
+      navigate('/compare');
+    } else {
+      addPokemonToCompare(pokemon);
+      navigate('/compare');
+    }
   };
 
   return (
