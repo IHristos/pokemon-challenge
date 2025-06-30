@@ -7,6 +7,7 @@ import {
   RadialLinearScale,
   Tooltip,
 } from 'chart.js';
+import PropTypes from 'prop-types';
 import { Radar } from 'react-chartjs-2';
 
 ChartJS.register(
