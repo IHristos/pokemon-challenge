@@ -74,43 +74,23 @@ const CompareHexagon = ({ pokemon1, pokemon2 }) => {
               return ChartJS.defaults.plugins.legend.labels.generateLabels(
                 chart,
               );
-            const left = datasets[0];
-            const right = datasets[1];
+            const leftPokemon = datasets[0];
+            const rightPokemon = datasets[1];
             return [
               // Left name
               {
-                text: left.label,
-                fillStyle: 'transparent',
-                strokeStyle: 'transparent',
-                hidden: false,
-                // pointStyle: 'rect',
+                text: leftPokemon.label,
+                fontColor: leftPokemon.borderColor,
+                fillStyle: leftPokemon.borderColor,
+                strokeStyle: leftPokemon.borderColor,
                 datasetIndex: 0,
               },
               // Left color
               {
-                text: '',
-                fillStyle: left.borderColor,
-                strokeStyle: left.borderColor,
-                hidden: false,
-                pointStyle: 'rect',
-                datasetIndex: 0,
-              },
-              // Right color
-              {
-                text: '',
-                fillStyle: right.borderColor,
-                strokeStyle: right.borderColor,
-                hidden: false,
-                pointStyle: 'rect',
-                datasetIndex: 1,
-              },
-              // Right name
-              {
-                text: right.label,
-                fillStyle: 'transparent',
-                strokeStyle: 'transparent',
-                hidden: false,
-                pointStyle: 'rect',
+                text: rightPokemon.label,
+                fontColor: rightPokemon.borderColor,
+                fillStyle: rightPokemon.borderColor,
+                strokeStyle: rightPokemon.borderColor,
                 datasetIndex: 1,
               },
             ];
@@ -125,18 +105,18 @@ const CompareHexagon = ({ pokemon1, pokemon2 }) => {
       r: {
         angleLines: {
           display: true,
-          color: '#aaa',
+          color: 'rgba(255, 255, 255, 0.2)',
         },
 
         min: 0,
         max: 100,
         ticks: {
           stepSize: 20,
-          color: '#888',
+          color: 'rgba(255, 0, 0, 0.7)',
         },
 
         grid: {
-          color: '#eee',
+          color: 'rgba(255, 255, 255, 0.2)',
         },
 
         pointLabels: {
