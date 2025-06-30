@@ -34,14 +34,11 @@ function getStatData(pokemon) {
   );
 }
 
-const colors = [
-  'rgba(255, 99, 132, 0.5)', // red
-  'rgba(54, 162, 235, 0.5)', // blue
-];
+const colors = ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'];
 
 const borderColors = ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'];
 
-const CompareRadarChart = ({ pokemon1, pokemon2 }) => {
+const CompareHexagon = ({ pokemon1, pokemon2 }) => {
   const data = {
     labels: statLabels.map((l) => l.replace('-', ' ')),
     datasets: [
@@ -94,4 +91,4 @@ const CompareRadarChart = ({ pokemon1, pokemon2 }) => {
   return <Radar data={data} options={options} />;
 };
 
-export default CompareRadarChart;
+export default CompareHexagon;
