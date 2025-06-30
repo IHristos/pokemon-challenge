@@ -59,6 +59,12 @@ const CompareCard = ({ pokemon, onAddClick }) => {
       {pokemon ? (
         <>
           <CardContent sx={{ width: '100%' }}>
+            <Typography
+              variant='body3'
+              sx={{ textAlign: 'center', marginTop: 6 }}
+            >
+              ID: {pokemon.id}
+            </Typography>
             <Typography variant='h5' sx={{ textAlign: 'center' }}>
               {capitalizedName}
             </Typography>
@@ -86,6 +92,7 @@ const CompareCard = ({ pokemon, onAddClick }) => {
                 alignItems: 'center',
                 flexWrap: 'wrap',
                 gap: 1,
+                marginTop: 6,
               }}
             >
               {pokemon.types && pokemon.types.length > 0
@@ -118,34 +125,72 @@ const CompareCard = ({ pokemon, onAddClick }) => {
                 : 'Unknown type'}
             </Typography>
             {pokemon.stats && (
-              <Box sx={{ mt: 2 }}>
-                {[
-                  'hp',
-                  'attack',
-                  'defense',
-                  'special-attack',
-                  'special-defense',
-                  'speed',
-                ].map((statKey) => {
-                  const statObj = pokemon.stats.find(
-                    (s) => s.stat.name === statKey,
-                  );
-                  return (
+              <Box
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 2,
+                  marginTop: 6,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  {[
+                    'hp',
+                    'attack',
+                    'defense',
+                    'special-attack',
+                    'special-defense',
+                    'speed',
+                  ].map((statKey) => (
                     <Typography
                       key={statKey}
                       variant='body1'
-                      sx={{ textAlign: 'center' }}
+                      sx={{ textAlign: 'left', minWidth: 120 }}
                     >
-                      {capitalizeFirstChar(statKey.replace('-', ' '))}:{' '}
-                      {statObj ? statObj.base_stat : 'N/A'}
+                      {capitalizeFirstChar(statKey.replace('-', ' '))}
                     </Typography>
-                  );
-                })}
+                  ))}
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  {[
+                    'hp',
+                    'attack',
+                    'defense',
+                    'special-attack',
+                    'special-defense',
+                    'speed',
+                  ].map((statKey) => {
+                    const statObj = pokemon.stats.find(
+                      (s) => s.stat.name === statKey,
+                    );
+                    return (
+                      <Typography
+                        key={statKey}
+                        variant='body1'
+                        sx={{ textAlign: 'right', minWidth: 30 }}
+                      >
+                        {statObj ? statObj.base_stat : 'N/A'}
+                      </Typography>
+                    );
+                  })}
+                </Box>
               </Box>
             )}
-            <Typography variant='h5' sx={{ textAlign: 'center' }}>
-              {pokemon.id}
-            </Typography>
           </CardContent>
           <Button
             variant='contained'
@@ -190,10 +235,13 @@ const ComparePage = () => {
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '80vh',
-          gap: 4,
+          gap: { xs: 2, md: 4 },
+          width: '100%',
+          px: { xs: 1, sm: 2, md: 4 },
         }}
       >
         <CompareCard
@@ -202,11 +250,12 @@ const ComparePage = () => {
         />
         <Box
           sx={{
-            width: 400,
-            height: 400,
+            width: { xs: 280, sm: 320, md: 400 },
+            height: { xs: 280, sm: 320, md: 400 },
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            my: { xs: 2, md: 0 },
           }}
         >
           <CompareHexagon pokemon1={compareList[0]} pokemon2={compareList[1]} />
