@@ -1,8 +1,15 @@
-import { Button, CircularProgress, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Background from '../components/background';
+import { useCompare } from '../components/compareContext';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
 import '../css/pokemonPage.css';
@@ -12,10 +19,12 @@ const PokemonPage = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(undefined);
   const [evolutionChain, setEvolutionChain] = useState([]);
+  const [compareList, setCompareList] = useState([]);
   const navigate = useNavigate();
   const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
   const [imgSrc, setImgSrc] = useState(null);
   const sprite = useRef(false);
+  const { addPokemonToCompare } = useCompare();
 
   useEffect(() => {
     setPokemon(undefined);
@@ -69,6 +78,23 @@ const PokemonPage = () => {
     }
   };
 
+  const handleAddToCompare = async (poke) => {
+    if (!poke) return;
+    // If poke has stats, it's a full object; otherwise, fetch full data
+    if (poke.stats) {
+      addPokemonToCompare(poke);
+    } else {
+      try {
+        const res = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${poke.name || poke.id}`,
+        );
+        addPokemonToCompare(res.data);
+      } catch (e) {
+        // Optionally show error
+      }
+    }
+  };
+
   const getPokemon = () => {
     if (!pokemon) {
       return <Typography variant='h4'>Loading...</Typography>;
@@ -79,7 +105,17 @@ const PokemonPage = () => {
     const capitalizedName = capitalizeFirstChar(pokemon.name);
     return (
       <>
-        <div className='pokemon-page-container'>
+        <div
+          className='pokemon-page-container'
+          style={{ position: 'relative' }}
+        >
+          <IconButton
+            className='pokemon-page-add-btn'
+            onClick={() => handleAddToCompare(pokemon)}
+            title='Add to Compare'
+          >
+            <AddIcon color='action' />
+          </IconButton>
           <Typography variant='h2' sx={{ mb: 2 }}>
             {`${id}. ${capitalizedName}`}
           </Typography>
@@ -152,7 +188,24 @@ const PokemonPage = () => {
                 const evoId = match ? match[1] : '';
                 const evoImg = images[`../assets/shiny/${evoId}.png`]?.default;
                 return (
-                  <div className='pokemon-evolution-card' key={evoId}>
+                  <div
+                    className='pokemon-evolution-card'
+                    key={evoId}
+                    style={{ position: 'relative' }}
+                  >
+                    <IconButton
+                      className='pokemon-evolution-add-btn'
+                      onClick={() =>
+                        handleAddToCompare({
+                          id: Number(evoId),
+                          name: evo.name,
+                          // You can add more fields if needed
+                        })
+                      }
+                      title='Add to Compare'
+                    >
+                      <AddIcon color='action' />
+                    </IconButton>
                     <img
                       src={evoImg || images['../assets/shiny/0.png']?.default}
                       alt={capitalizeFirstChar(evo.name)}
