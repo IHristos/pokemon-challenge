@@ -80,7 +80,6 @@ const PokemonPage = () => {
 
   const handleAddToCompare = async (poke) => {
     if (!poke) return;
-    // If poke has stats, it's a full object; otherwise, fetch full data
     if (poke.stats) {
       addPokemonToCompare(poke);
     } else {
@@ -90,7 +89,7 @@ const PokemonPage = () => {
         );
         addPokemonToCompare(res.data);
       } catch (e) {
-        // Optionally show error
+        console.error('Error fetching Pokemon data:', e);
       }
     }
   };
@@ -183,7 +182,6 @@ const PokemonPage = () => {
             </Typography>
             <div className='pokemon-evolution-cards'>
               {evolutionChain.map((evo) => {
-                // Extract ID from species URL
                 const match = evo.url.match(/\/(\d+)\/?$/);
                 const evoId = match ? match[1] : '';
                 const evoImg = images[`../assets/shiny/${evoId}.png`]?.default;
@@ -199,7 +197,6 @@ const PokemonPage = () => {
                         handleAddToCompare({
                           id: Number(evoId),
                           name: evo.name,
-                          // You can add more fields if needed
                         })
                       }
                       title='Add to Compare'

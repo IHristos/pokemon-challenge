@@ -9,7 +9,8 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center !important;
+  align-items: stretch !important;
+  position: relative;
 }
 
 .pokemon-page-image {
@@ -98,9 +99,10 @@
   padding: 1rem 1.2rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   min-width: 120px;
   max-width: 140px;
+  width: 140px;
   position: relative;
 }
 
@@ -112,31 +114,43 @@
 
 .pokemon-evolution-add-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  bottom: 15px;
+  left: 90%;
   z-index: 2;
   background-color: #5fbd58 !important;
-  border-radius: 16px !important;
+  border-radius: 0px 13px 0px 13px !important;
   transition:
     background-color 0.2s,
     transform 0.2s;
+  width: 30px;
+  height: 30px;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
-.pokemon-evolution-add-btn:hover {
-  background-color: rgba(123, 207, 43, 1) !important;
-  transform: scale(1.1);
-}
-
 .pokemon-page-add-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  bottom: 30px;
+  left: 95%;
   z-index: 2;
   background-color: #5fbd58 !important;
-  border-radius: 16px !important;
+  border-radius: 0px 13px 0px 13px !important;
   transition:
     background-color 0.2s,
     transform 0.2s;
+  width: 50px;
+  height: 50px;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
+.pokemon-evolution-add-btn:hover,
 .pokemon-page-add-btn:hover {
   background-color: rgba(123, 207, 43, 1) !important;
   transform: scale(1.1);

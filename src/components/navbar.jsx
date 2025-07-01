@@ -18,7 +18,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/navbar.css';
 import '../index.css';
 
-const pages = ['HOME', 'COMPARE', 'ABOUT'];
+const pages = ['HOME', 'COMPARE'];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -36,7 +36,6 @@ function Navbar() {
   const handleNavClick = (page) => {
     if (page === 'HOME') navigate('/');
     else if (page === 'COMPARE') navigate('/compare');
-    else if (page === 'ABOUT') navigate('/about');
   };
 
   return (
