@@ -92,6 +92,9 @@ const PokemonPage = () => {
                 <Typography variant='h6' component='h3'>
                   Species:
                 </Typography>
+                <Typography variant='h6' component='h3'>
+                  Abilities:
+                </Typography>
               </div>
               <div className='pokemon-details-value'>
                 <Typography variant='h6' component='h3'>
@@ -107,6 +110,11 @@ const PokemonPage = () => {
                 </Typography>
                 <Typography variant='h6' component='h3'>
                   {capitalizeFirstChar(species.name)}
+                </Typography>
+                <Typography variant='h6' component='h3'>
+                  {(pokemon.abilities || [])
+                    .map((a) => capitalizeFirstChar(a.ability.name))
+                    .join(', ')}
                 </Typography>
               </div>
             </div>
