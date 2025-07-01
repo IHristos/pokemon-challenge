@@ -184,7 +184,10 @@ const PokemonPage = () => {
               {evolutionChain.map((evo) => {
                 const match = evo.url.match(/\/(\d+)\/?$/);
                 const evoId = match ? match[1] : '';
-                const evoImg = images[`../assets/shiny/${evoId}.png`]?.default;
+                const shinyImg =
+                  images[`../assets/shiny/${evoId}.png`]?.default;
+                const apiSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${evoId}.png`;
+                const fallbackImg = images['../assets/shiny/0.png']?.default;
                 return (
                   <div
                     className='pokemon-evolution-card'
@@ -204,11 +207,18 @@ const PokemonPage = () => {
                       <AddIcon color='action' />
                     </IconButton>
                     <img
-                      src={evoImg || images['../assets/shiny/0.png']?.default}
+                      src={shinyImg || apiSprite}
                       alt={capitalizeFirstChar(evo.name)}
                       className='pokemon-evolution-img'
                       style={{ cursor: 'pointer' }}
                       onClick={() => navigate(`/pokemon/${evo.name}`)}
+                      onError={(e) => {
+                        if (e.target.src !== apiSprite) {
+                          e.target.src = apiSprite;
+                        } else if (fallbackImg) {
+                          e.target.src = fallbackImg;
+                        }
+                      }}
                     />
                     <Typography variant='body2'>#{evoId}</Typography>
                     <Typography variant='body1'>

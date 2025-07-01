@@ -60,23 +60,18 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 0.5rem 1.5rem;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   margin-top: 1.5rem;
-  text-align: left;
+  text-align: center;
 }
 
-.pokemon-details-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-weight: 600;
-}
-
+.pokemon-details-label,
 .pokemon-details-value {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .pokemon-evolution-section {
