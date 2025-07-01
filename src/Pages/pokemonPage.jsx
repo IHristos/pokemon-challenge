@@ -320,7 +320,7 @@ const PokemonPage = () => {
             </div>
           </div>
         )}
-        {/* Pokemon Evolution Section */}
+        {/* Pokemon Evolutionp Section */}
         {evolutionChain.length > 0 && (
           <div className='pokemon-evolution-section'>
             <Typography variant='h4' sx={{ mt: 4, mb: 2 }}>
