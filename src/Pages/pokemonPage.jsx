@@ -11,6 +11,7 @@ import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 const PokemonPage = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(undefined);
+  const [evolutionChain, setEvolutionChain] = useState([]);
   const navigate = useNavigate();
   const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
   const [imgSrc, setImgSrc] = useState(null);
@@ -35,6 +36,25 @@ const PokemonPage = () => {
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
     setImgSrc(shinyImage || spriteUrl);
     sprite.current = false;
+  }, [pokemon]);
+
+  useEffect(() => {
+    if (!pokemon) return;
+    axios.get(pokemon.species.url).then((speciesRes) => {
+      const evoUrl = speciesRes.data.evolution_chain.url;
+      axios.get(evoUrl).then((evoRes) => {
+        const evoList = [];
+        function traverse(chain) {
+          if (!chain) return;
+          evoList.push(chain.species);
+          if (chain.evolves_to && chain.evolves_to.length > 0) {
+            chain.evolves_to.forEach(traverse);
+          }
+        }
+        traverse(evoRes.data.chain);
+        setEvolutionChain(evoList);
+      });
+    });
   }, [pokemon]);
 
   const handleImgError = () => {
@@ -120,15 +140,45 @@ const PokemonPage = () => {
             </div>
           </div>
         </div>
-        <div className='pokemon-page-back-container'>
-          <Button
-            className='pokemon-page-back'
-            variant='contained'
-            onClick={() => navigate('/')}
-          >
-            Back to Pokedex
-          </Button>
-        </div>
+        {evolutionChain.length > 0 && (
+          <div className='pokemon-evolution-section'>
+            <Typography variant='h4' sx={{ mt: 4, mb: 2 }}>
+              Evolution
+            </Typography>
+            <div className='pokemon-evolution-cards'>
+              {evolutionChain.map((evo) => {
+                // Extract ID from species URL
+                const match = evo.url.match(/\/(\d+)\/?$/);
+                const evoId = match ? match[1] : '';
+                const evoImg = images[`../assets/shiny/${evoId}.png`]?.default;
+                return (
+                  <div className='pokemon-evolution-card' key={evoId}>
+                    <img
+                      src={evoImg || images['../assets/shiny/0.png']?.default}
+                      alt={capitalizeFirstChar(evo.name)}
+                      className='pokemon-evolution-img'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => navigate(`/pokemon/${evo.name}`)}
+                    />
+                    <Typography variant='body2'>#{evoId}</Typography>
+                    <Typography variant='body1'>
+                      {capitalizeFirstChar(evo.name)}
+                    </Typography>
+                  </div>
+                );
+              })}
+            </div>
+            <div className='pokemon-page-back-container'>
+              <Button
+                className='pokemon-page-back'
+                variant='contained'
+                onClick={() => navigate('/')}
+              >
+                Back to Pokedex
+              </Button>
+            </div>
+          </div>
+        )}
       </>
     );
   };
