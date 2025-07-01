@@ -6,7 +6,6 @@ const CompareContext = createContext();
 export function CompareProvider({ children }) {
   const [compareList, setCompareList] = useState([null, null]);
 
-  // Add or replace at a specific index
   const setPokemonAtIndex = (pokemon, index) => {
     setCompareList((prev) => {
       const newList = [...prev];

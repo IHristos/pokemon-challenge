@@ -7,7 +7,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import '../css/pokemonCard.css';
+import '../css/cardGrid.css';
 import { useCompare } from './compareContext';
 import PokemonCard from './pokemonCard';
 
@@ -50,9 +50,7 @@ const CardGrid = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Detect compare mode by query param (?compare=1) or location state
   const compareMode = true;
-  // Location.state?.compareMode || searchParams.get('compare') === '1';
 
   const page = filter
     ? internalPage
@@ -137,7 +135,7 @@ const CardGrid = ({
               name: data.name,
               sprite: data.sprites.front_default,
               types: data.types,
-              stats: data.stats, // Add stats here
+              stats: data.stats,
             };
           });
           setPokemonData(newPokemonData);
@@ -208,7 +206,6 @@ const CardGrid = ({
     return allPages;
   };
 
-  // Handler for adding to compare
   const handleAddToCompare = (pokemon) => {
     const params = new URLSearchParams(location.search);
     const replaceIndex = params.get('replaceIndex');
@@ -224,21 +221,8 @@ const CardGrid = ({
   return (
     <>
       {loading || !pokemonData ? (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
+        <div className='loading-container'>
+          <div className='loading-spinner'>
             <h1>Loading...</h1>
             <CircularProgress color='error' />
           </div>
@@ -267,16 +251,7 @@ const CardGrid = ({
               ))
             )}
           </Grid>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              margin: '2rem 0',
-              flexWrap: 'wrap',
-              gap: '0.5rem',
-              alignItems: 'center',
-            }}
-          >
+          <div className='pagination-buttons'>
             <Button
               onClick={() => setPage(0)}
               disabled={page === 0}

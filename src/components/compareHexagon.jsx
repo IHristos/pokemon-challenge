@@ -78,7 +78,7 @@ const CompareHexagon = ({ pokemon1, pokemon2 }) => {
             const leftPokemon = datasets[0];
             const rightPokemon = datasets[1];
             return [
-              // Left name
+              // Left legend
               {
                 text: leftPokemon.label,
                 fontColor: leftPokemon.borderColor,
@@ -86,7 +86,7 @@ const CompareHexagon = ({ pokemon1, pokemon2 }) => {
                 strokeStyle: leftPokemon.borderColor,
                 datasetIndex: 0,
               },
-              // Left color
+              // Right legend
               {
                 text: rightPokemon.label,
                 fontColor: rightPokemon.borderColor,

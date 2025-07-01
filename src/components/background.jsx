@@ -11,7 +11,7 @@ function Background() {
       <img src={pokeball2} alt='Pokemon Group' className='pokeball3' />
       <img src={pokeball1} alt='Pokeball' className='pokeball4' />
       <img src={pokeball2} alt='Pokeball' className='pokeball5' />
-      <img src={ash} alt='Pokeball' className='ash' />
+      <img src={ash} alt='Ash' className='ash' />
     </div>
   );
 }
