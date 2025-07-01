@@ -1,12 +1,18 @@
-# React + Vite
+## Projekt-Ausführungshinweise
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Online-Version
 
-Currently, two official plugins are available:
+Das Projekt ist online auf **Vercel** verfügbar. Sie können die Anwendung direkt nutzen, ohne etwas herunterladen oder installieren zu müssen:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+***Link:*** [Vercel](https://pokemon-challenge-xi.vercel.app/)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Lokale Ausführung
+
+Wenn Sie das Projekt **lokal auf Ihrem Rechner ausführen** möchten, gehen Sie bitte wie folgt vor:
+
+1. Öffnen Sie ein Terminal und navigieren Sie in das **Root-Verzeichnis** des Repositories.
+2. Führen Sie den Befehl `npm install` aus, um **alle benötigten Abhängigkeiten zu installieren**.
+3. Nach erfolgreicher Installation starten Sie das Projekt mit `npm start`.
+4. Öffnen Sie Ihren Browser und rufen Sie die Adresse http://localhost:5173/ auf, um die Webanwendung zu sehen.
