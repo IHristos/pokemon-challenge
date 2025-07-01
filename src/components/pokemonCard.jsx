@@ -23,10 +23,6 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
   return (
     <Card
       className='card'
-      sx={{
-        position: 'relative',
-        backgroundColor: 'rgba(36, 36, 36, 0.85)',
-      }}
       onClick={() =>
         navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
       }
@@ -43,48 +39,21 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
         </IconButton>
       )}
       <CardContent>
-        <Typography
-          variant='h5'
-          component='div'
-          sx={{
-            textAlign: 'center',
-            textShadow: '0 0 10px #98F9FB',
-            color: '#fff',
-          }}
-        >
+        <Typography className='pokemon-name-text' variant='h5' component='div'>
           {capitalizedName ?? 'Unknown'}
         </Typography>
-        <CardMedia
-          className='pokemon-card-media'
-          image={sprite}
-          sx={{ width: 200, height: 200, mx: 'auto' }}
-        />
+        <CardMedia className='pokemon-card-media' image={sprite} />
         <Typography
+          className='pokemon-types-container'
           variant='h5'
           component='div'
-          sx={{
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 1,
-            color: '#fff',
-          }}
         >
           {(pokemon?.types || []).map((typeObj) => {
             const typeName = typeObj?.type?.name;
             const iconKey = `../assets/typeIcons/${typeName}.svg`;
             const iconSrc = typeIcons[iconKey]?.default;
             return (
-              <span
-                key={typeName}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginRight: 8,
-                }}
-              >
+              <span className='pokemon-types-text' key={typeName}>
                 {iconSrc && (
                   <span className={`type-icon-bg ${typeName}`}>
                     <img src={iconSrc} alt={typeName} className='type-icon' />
@@ -95,16 +64,7 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
             );
           })}
         </Typography>
-        <Typography
-          variant='body2'
-          color='text.secondary'
-          style={{
-            marginTop: '40px',
-            textAlign: 'center',
-            textShadow: '0 0 5px #98F9FB',
-            color: '#fff',
-          }}
-        >
+        <Typography className='pokemon-id-text' variant='body2'>
           ID: {pokemon?.id ?? 'N/A'}
         </Typography>
       </CardContent>

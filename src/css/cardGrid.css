@@ -8,4 +8,40 @@
   height: auto;
   cursor: pointer;
   margin: auto;
+  position: 'relative';
+  background-color: rgba(55, 55, 55, 0.85) !important;
+}
+
+.pokemon-name-text {
+  text-align: center;
+  text-shadow: 0 0 10px #98f9fb;
+  color: #fff;
+}
+
+.pokemon-card-media {
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+
+.pokemon-types-container {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  color: #fff;
+}
+
+.pokemon-types-text {
+  display: flex;
+  align-items: center;
+}
+
+.pokemon-id-text {
+  margin-top: 40px !important;
+  text-align: center;
+  color: #fff !important;
+  text-shadow: 0 0 5px #98f9fb;
 }
