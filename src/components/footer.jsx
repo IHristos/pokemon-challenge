@@ -9,10 +9,17 @@ const Footer = () => (
       mt: 4,
     }}
   >
-    <Box className='footer-background' />
+    <Box
+      className='footer-background'
+      sx={{
+        backgroundColor: 'rgba(59,59,59,0.8)',
+        backdropFilter: 'blur(10px)',
+      }}
+    />
     <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
       <Typography variant='body2' color='white'>
-        © {new Date().getFullYear()} All rights reserved.
+        © {new Date().getFullYear()} Max-Eyth-Schule (Projektarbeit) - Christos
+        Ioannidis
       </Typography>
     </Box>
   </Box>

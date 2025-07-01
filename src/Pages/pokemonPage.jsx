@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Background from '../components/background';
 import Footer from '../components/footer';
 import Navbar from '../components/navbar';
+import '../css/pokemonPage.css';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
 const PokemonPage = () => {
@@ -14,6 +15,7 @@ const PokemonPage = () => {
   const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
   const [imgSrc, setImgSrc] = useState(null);
   const sprite = useRef(false);
+
   useEffect(() => {
     setPokemon(undefined);
     axios
@@ -25,6 +27,7 @@ const PokemonPage = () => {
         setPokemon(false);
       });
   }, [name]);
+
   useEffect(() => {
     if (!pokemon) return;
     const imageKey = `../assets/shiny/${pokemon?.id}.png`;
@@ -33,6 +36,7 @@ const PokemonPage = () => {
     setImgSrc(shinyImage || spriteUrl);
     sprite.current = false;
   }, [pokemon]);
+
   const handleImgError = () => {
     if (!pokemon) return;
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
@@ -44,43 +48,69 @@ const PokemonPage = () => {
       setImgSrc(defaultImage);
     }
   };
+
   const getPokemon = () => {
     if (!pokemon) {
       return <Typography variant='h4'>Loading...</Typography>;
     }
+
     const { id, species, height, weight, types } = pokemon;
     const noImageAvailable = images['../assets/shiny/0.png']?.default;
     const capitalizedName = capitalizeFirstChar(pokemon.name);
     return (
-      <>
-        <Typography variant='h1'>
-          {`${id}.`}
-          {capitalizedName}
-          <img
-            style={{ width: '300px', height: '300px' }}
-            src={imgSrc || noImageAvailable}
-            alt={capitalizedName}
-            onError={handleImgError}
-          />
-          {imgSrc === noImageAvailable && (
-            <Typography variant='h5'>
-              No Available Image for this Pokemon
-            </Typography>
-          )}
+      <div className='pokemon-page-container'>
+        <Typography variant='h2' sx={{ mb: 2 }}>
+          {`${id}. ${capitalizedName}`}
         </Typography>
-        <Typography variant='h2'>Pokemon Details:</Typography>
-        <Typography variant='h3'>Height: {height}</Typography>
-        <Typography variant='h3'>Weight: {weight}</Typography>
-        <Typography variant='h3'>
-          Types:{' '}
-          {(types || [])
-            .map((typeObj) => capitalizeFirstChar(typeObj.type.name))
-            .join(', ')}
-        </Typography>
-        <Typography variant='h3'>
-          Species: {capitalizeFirstChar(species.name)}
-        </Typography>
-      </>
+        <img
+          className='pokemon-page-image'
+          src={imgSrc || noImageAvailable}
+          alt={capitalizedName}
+          onError={handleImgError}
+        />
+        {imgSrc === noImageAvailable && (
+          <Typography variant='h5'>
+            No Available Image for this Pokemon
+          </Typography>
+        )}
+        <div className='pokemon-page-details'>
+          <Typography variant='h4' component='h2'>
+            Pokemon Details:
+          </Typography>
+          <div className='pokemon-details-grid'>
+            <div className='pokemon-details-label'>
+              <Typography variant='h6' component='h3'>
+                Height:
+              </Typography>
+              <Typography variant='h6' component='h3'>
+                Weight:
+              </Typography>
+              <Typography variant='h6' component='h3'>
+                Types:
+              </Typography>
+              <Typography variant='h6' component='h3'>
+                Species:
+              </Typography>
+            </div>
+            <div className='pokemon-details-value'>
+              <Typography variant='h6' component='h3'>
+                {height}
+              </Typography>
+              <Typography variant='h6' component='h3'>
+                {weight}
+              </Typography>
+              <Typography variant='h6' component='h3'>
+                {(types || [])
+                  .map((typeObj) => capitalizeFirstChar(typeObj.type.name))
+                  .join(', ')}
+              </Typography>
+              <Typography variant='h6' component='h3'>
+                {capitalizeFirstChar(species.name)}
+              </Typography>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -111,27 +141,28 @@ const PokemonPage = () => {
       )}
       {pokemon && getPokemon()}
       {pokemon === false && (
-        <>
+        <div className='pokemon-page-container'>
           <img
+            className='pokemon-page-image'
             src={
               import.meta.glob('../assets/shiny/missingNo.png', {
                 eager: true,
               })['../assets/shiny/missingNo.png']?.default
             }
             alt='Pokemon not found'
-            style={{ width: '300px', height: '300px' }}
           />
           <Typography variant='h4'>Pokemon not found</Typography>
-        </>
+        </div>
       )}
       {pokemon !== undefined && (
-        <Button variant='contained' onClick={() => navigate('/')}>
+        <Button
+          className='pokemon-page-back'
+          variant='contained'
+          onClick={() => navigate('/')}
+        >
           Back to Pokedex
         </Button>
       )}
-      <div className='pokemon-page'>
-        <h1>{`Pokemon Page for Pokemon: #${pokemon?.id || name}`}</h1>
-      </div>
       <Footer />
     </>
   );
