@@ -7,7 +7,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import '../css/cardGrid.css';
+import '../css/pokemonCard.css';
 import { useCompare } from './compareContext';
 import PokemonCard from './pokemonCard';
 

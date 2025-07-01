@@ -14,12 +14,16 @@ import {
   Typography,
 } from '@mui/material';
 import * as React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import '../css/navbar.css';
 import '../index.css';
 
 const pages = ['HOME', 'COMPARE', 'ABOUT'];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -29,22 +33,31 @@ function Navbar() {
     setAnchorElNav(null);
   };
 
+  const handleNavClick = (page) => {
+    if (page === 'HOME') navigate('/');
+    else if (page === 'COMPARE') navigate('/compare');
+    else if (page === 'ABOUT') navigate('/about');
+  };
+
   return (
     <AppBar position='sticky' sx={{ backgroundColor: 'rgb(59, 59, 59)' }}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          <PokemonIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 5 }} />
-          <Typography
-            variant='h5'
-            noWrap
+          <PokemonIcon
+            className='pokemon-icon'
+            onClick={() => navigate('/')}
             sx={{
               display: { xs: 'none', md: 'flex' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              mr: 5,
+            }}
+          />
+          <Typography
+            className='navbar-title'
+            variant='h5'
+            noWrap
+            onClick={() => navigate('/')}
+            sx={{
+              display: { xs: 'none', md: 'flex' },
             }}
           >
             POKEDEX APP
@@ -74,29 +87,45 @@ function Navbar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
+              {pages.map((page) => {
+                const isActive =
+                  (page === 'HOME' && location.pathname === '/') ||
+                  (page === 'COMPARE' && location.pathname === '/compare') ||
+                  (page === 'ABOUT' && location.pathname === '/about');
+                return (
+                  <MenuItem
+                    key={page}
+                    className={`menu-items-small${isActive ? ' active' : ''}`}
+                    onClick={() => {
+                      handleNavClick(page);
+                      handleCloseNavMenu();
+                    }}
+                  >
+                    <Typography>{page}</Typography>
+                  </MenuItem>
+                );
+              })}
             </Menu>
           </Box>
 
-          <PokemonIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 3 }} />
+          <PokemonIcon
+            className='pokemon-icon'
+            onClick={() => navigate('/')}
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              mr: 3,
+            }}
+          />
           <Typography
             variant='h5'
             noWrap
+            className='navbar-title'
+            onClick={() => navigate('/')}
             sx={{
               display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
             }}
           >
-            POKEMON APP
+            POKEDEX APP
           </Typography>
           <Box
             sx={{
@@ -105,15 +134,27 @@ function Navbar() {
               justifyContent: 'flex-end',
             }}
           >
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            {pages.map((page) => {
+              const isActive =
+                (page === 'HOME' && location.pathname === '/') ||
+                (page === 'COMPARE' && location.pathname === '/compare') ||
+                (page === 'ABOUT' && location.pathname === '/about');
+              return (
+                <Button
+                  key={page}
+                  className={`navbar-btn${isActive ? ' active' : ''}`}
+                  onClick={() => {
+                    handleNavClick(page);
+                    handleCloseNavMenu();
+                  }}
+                  sx={{
+                    my: 2,
+                  }}
+                >
+                  {page}
+                </Button>
+              );
+            })}
           </Box>
           <Box sx={{ flexGrow: 0 }}></Box>
         </Toolbar>

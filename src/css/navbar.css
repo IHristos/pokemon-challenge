@@ -1,0 +1,42 @@
+.pokemon-icon:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}
+
+.navbar-title {
+  flex-grow: 1;
+  font-family: monospace !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3rem !important;
+}
+
+.navbar-title:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+}
+
+.navbar-btn {
+  color: #fff !important;
+  display: block;
+}
+
+.navbar-btn.active,
+.navbar-btn.active:hover {
+  background-color: #539ddf;
+  color: #000000 !important;
+}
+
+.navbar-btn:hover {
+  background-color: #539edf2d;
+}
+
+.menu-items-small.active,
+.menu-items-small.active:hover {
+  background-color: #539ddf !important;
+  color: #000000;
+}
+
+.menu-items-small:hover {
+  background-color: #539edf9d !important;
+  color: #fff;
+}

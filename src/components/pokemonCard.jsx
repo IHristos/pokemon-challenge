@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import '../css/cardGrid.css';
 import '../css/iconStyle.css';
+import '../css/pokemonCard.css';
 import { capitalizeFirstChar } from '../utils/capitalizeFirstChar';
 
 const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
