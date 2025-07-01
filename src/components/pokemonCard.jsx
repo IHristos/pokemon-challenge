@@ -23,9 +23,9 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
   return (
     <Card
       className='card'
-      onClick={() =>
-        navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
-      }
+      // onClick={() =>
+      //   navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
+      // }
     >
       {showAddButton && (
         <IconButton
@@ -39,10 +39,23 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
         </IconButton>
       )}
       <CardContent>
-        <Typography className='pokemon-name-text' variant='h5' component='div'>
+        <Typography
+          className='pokemon-name-text'
+          variant='h5'
+          component='div'
+          onClick={() =>
+            navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
+          }
+        >
           {capitalizedName ?? 'Unknown'}
         </Typography>
-        <CardMedia className='pokemon-card-media' image={sprite} />
+        <CardMedia
+          className='pokemon-card-media'
+          image={sprite}
+          onClick={() =>
+            navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
+          }
+        />
         <Typography
           className='pokemon-types-container'
           variant='h5'
