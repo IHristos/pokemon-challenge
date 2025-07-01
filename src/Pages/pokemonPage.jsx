@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import axios from 'axios';
@@ -20,8 +21,17 @@ const PokemonPage = () => {
   const [pokemon, setPokemon] = useState(undefined);
   const [evolutionChain, setEvolutionChain] = useState([]);
   const [compareList, setCompareList] = useState([]);
+  const [typeEffectiveness, setTypeEffectiveness] = useState({
+    strengths: [],
+    weaknesses: [],
+    resistant: [],
+    vulnerable: [],
+  });
   const navigate = useNavigate();
   const images = import.meta.glob('../assets/shiny/*.png', { eager: true });
+  const typeIcons = import.meta.glob('../assets/typeIcons/*.svg', {
+    eager: true,
+  });
   const [imgSrc, setImgSrc] = useState(null);
   const sprite = useRef(false);
   const { addPokemonToCompare } = useCompare();
@@ -66,6 +76,42 @@ const PokemonPage = () => {
     });
   }, [pokemon]);
 
+  useEffect(() => {
+    if (!pokemon) return;
+    const fetchTypeData = async () => {
+      const typeUrls = (pokemon.types || []).map((t) => t.type.url);
+      const typeData = await Promise.all(
+        typeUrls.map((url) => axios.get(url).then((res) => res.data)),
+      );
+
+      const strengths = new Set();
+      const weaknesses = new Set();
+      const resistant = new Set();
+      const vulnerable = new Set();
+      typeData.forEach((type) => {
+        type.damage_relations.double_damage_to.forEach((t) =>
+          strengths.add(t.name),
+        );
+        type.damage_relations.double_damage_from.forEach((t) =>
+          weaknesses.add(t.name),
+        );
+        type.damage_relations.half_damage_from.forEach((t) =>
+          resistant.add(t.name),
+        );
+        type.damage_relations.half_damage_to.forEach((t) =>
+          vulnerable.add(t.name),
+        );
+      });
+      setTypeEffectiveness({
+        strengths: Array.from(strengths),
+        weaknesses: Array.from(weaknesses),
+        resistant: Array.from(resistant),
+        vulnerable: Array.from(vulnerable),
+      });
+    };
+    fetchTypeData();
+  }, [pokemon]);
+
   const handleImgError = () => {
     if (!pokemon) return;
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon?.id}.png`;
@@ -104,6 +150,7 @@ const PokemonPage = () => {
     const capitalizedName = capitalizeFirstChar(pokemon.name);
     return (
       <>
+        {/* Pokemon Card Section */}
         <div
           className='pokemon-page-container'
           style={{ position: 'relative' }}
@@ -175,6 +222,105 @@ const PokemonPage = () => {
             </div>
           </div>
         </div>
+        {/* Type Effectiveness Section */}
+        {pokemon && (
+          <div className='pokemon-type-effectiveness'>
+            <Typography variant='h4' sx={{ mt: 4, mb: 2 }}>
+              Type Effectiveness
+            </Typography>
+            <div className='type-effectiveness-grid'>
+              <div className='type-effectiveness-label'>Strengths:</div>
+              <div className='type-effectiveness-values'>
+                {typeEffectiveness.strengths.length === 0
+                  ? 'None'
+                  : typeEffectiveness.strengths.map((type) => {
+                      const iconKey = `../assets/typeIcons/${type}.svg`;
+                      const iconSrc = typeIcons[iconKey]?.default;
+                      return iconSrc ? (
+                        <Tooltip key={type} title={capitalizeFirstChar(type)}>
+                          <span className={`type-icon-bg ${type}`}>
+                            <img
+                              src={iconSrc}
+                              alt={type}
+                              className='type-icon'
+                            />
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span key={type}>{capitalizeFirstChar(type)}</span>
+                      );
+                    })}
+              </div>
+              <div className='type-effectiveness-label'>Weaknesses:</div>
+              <div className='type-effectiveness-values'>
+                {typeEffectiveness.weaknesses.length === 0
+                  ? 'None'
+                  : typeEffectiveness.weaknesses.map((type) => {
+                      const iconKey = `../assets/typeIcons/${type}.svg`;
+                      const iconSrc = typeIcons[iconKey]?.default;
+                      return iconSrc ? (
+                        <Tooltip key={type} title={capitalizeFirstChar(type)}>
+                          <span className={`type-icon-bg ${type}`}>
+                            <img
+                              src={iconSrc}
+                              alt={type}
+                              className='type-icon'
+                            />
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span key={type}>{capitalizeFirstChar(type)}</span>
+                      );
+                    })}
+              </div>
+              <div className='type-effectiveness-label'>Resistant:</div>
+              <div className='type-effectiveness-values'>
+                {typeEffectiveness.resistant.length === 0
+                  ? 'None'
+                  : typeEffectiveness.resistant.map((type) => {
+                      const iconKey = `../assets/typeIcons/${type}.svg`;
+                      const iconSrc = typeIcons[iconKey]?.default;
+                      return iconSrc ? (
+                        <Tooltip key={type} title={capitalizeFirstChar(type)}>
+                          <span className={`type-icon-bg ${type}`}>
+                            <img
+                              src={iconSrc}
+                              alt={type}
+                              className='type-icon'
+                            />
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span key={type}>{capitalizeFirstChar(type)}</span>
+                      );
+                    })}
+              </div>
+              <div className='type-effectiveness-label'>Vulnerable:</div>
+              <div className='type-effectiveness-values'>
+                {typeEffectiveness.vulnerable.length === 0
+                  ? 'None'
+                  : typeEffectiveness.vulnerable.map((type) => {
+                      const iconKey = `../assets/typeIcons/${type}.svg`;
+                      const iconSrc = typeIcons[iconKey]?.default;
+                      return iconSrc ? (
+                        <Tooltip key={type} title={capitalizeFirstChar(type)}>
+                          <span className={`type-icon-bg ${type}`}>
+                            <img
+                              src={iconSrc}
+                              alt={type}
+                              className='type-icon'
+                            />
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span key={type}>{capitalizeFirstChar(type)}</span>
+                      );
+                    })}
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Pokemon Evolution Section */}
         {evolutionChain.length > 0 && (
           <div className='pokemon-evolution-section'>
             <Typography variant='h4' sx={{ mt: 4, mb: 2 }}>
