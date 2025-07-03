@@ -21,12 +21,7 @@ const PokemonCard = ({ pokemonId, pokemon, showAddButton = false, onAdd }) => {
   const capitalizedName = capitalizeFirstChar(pokemon.name);
 
   return (
-    <Card
-      className='card'
-      // onClick={() =>
-      //   navigate(`/pokemon/${pokemon.name}`, { state: { id: pokemonId } })
-      // }
-    >
+    <Card className='card'>
       {showAddButton && (
         <IconButton
           className='add-button'

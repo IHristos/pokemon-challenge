@@ -62,7 +62,7 @@ const CompareCard = ({ pokemon, onAddClick }) => {
           <CardContent sx={{ width: '100%' }}>
             <Typography
               variant='body3'
-              sx={{ textAlign: 'center', marginTop: 6 }}
+              sx={{ textAlign: 'center', marginTop: 6, marginLeft: '10px' }}
             >
               ID: {pokemon.id}
             </Typography>
@@ -241,7 +241,8 @@ const ComparePage = () => {
           alignItems: 'center',
           minHeight: '80vh',
           gap: { xs: 2, md: 4 },
-          width: '100%',
+          width: '100vw',
+          boxSizing: 'border-box',
           px: { xs: 1, sm: 2, md: 4 },
         }}
       >

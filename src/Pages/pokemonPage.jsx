@@ -20,7 +20,6 @@ const PokemonPage = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState(undefined);
   const [evolutionChain, setEvolutionChain] = useState([]);
-  const [compareList, setCompareList] = useState([]);
   const [typeEffectiveness, setTypeEffectiveness] = useState({
     strengths: [],
     weaknesses: [],

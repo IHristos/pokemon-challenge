@@ -229,7 +229,7 @@ const CardGrid = ({
         </div>
       ) : (
         <>
-          <Grid container spacing={4} className='card-grid'>
+          <Grid container spacing={6} className='card-grid'>
             {filteredEntries.length === 0 ? (
               <Grid item xs={12} style={{ textAlign: 'center' }}>
                 <h2>No Pokemon found.</h2>
@@ -237,7 +237,7 @@ const CardGrid = ({
             ) : (
               filteredEntries.map(([, pokemon]) => (
                 <Grid
-                  size={{ xs: 12, sm: 8, md: 6, lg: 4, xl: 2 }}
+                  size={{ xs: 12, sm: 6, md: 3, maxWidth: '100vh' }}
                   key={pokemon.id}
                 >
                   <PokemonCard
